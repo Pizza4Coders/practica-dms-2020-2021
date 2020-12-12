@@ -101,3 +101,118 @@ class AuthService():
             raise UnauthorizedError()
         if response.status == 500:
             raise HTTPException('Server error')
+
+    def create_user(self, username: str, password: str, session_id: str):
+        """ Creates a user in the authentication server.
+        ---
+        Parameters:
+            - username: The username string.
+            - password: The password string.
+            - session_id: The session id string.
+        Throws:
+            - HTTPException: On an unhandled 500 error.
+        """
+        form: str = urlencode({'username': username, 'password': password, 'session_id': session_id})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('POST', '/users', form, headers)
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            print('El usuario ha sido creado correctamente')
+        if response.status == 400:
+            print('Error de sintaxis. Pruebe de nuevo')
+        if response.status == 403: # Podría también emplearse el 401
+            print('Usted no tiene los permisos para realizar esta operación')
+        if response.status == 409:
+            print('El usuario que intenta crear ya existe')
+        if response.status == 500:
+            print('Error inesperado')
+            raise HTTPException('Server error')
+
+    def grant(self, username: str, right: str, session_id: str):
+        """ Grant a right to a user from the authentication server.
+        ---
+        Parameters:
+            - username: The username string.
+            - right: The right string.
+            - session_id: The session id string.
+        Throws:
+            - HTTPException: On an unhandled 500 error.
+        """
+        form: str = urlencode({'username': username, 'right': right, 'session_id': session_id})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('POST', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            print('Permiso otorgado correctamente')
+        if response.status == 400:
+            print('Error de sintaxis. Pruebe de nuevo')
+        if response.status == 403: # Podría también emplearse el 401
+            print('Usted no tiene los permisos para realizar esta operación')
+        if response.status == 500:
+            print('Error inesperado')
+            raise HTTPException('Server error')
+
+    def revoke(self, username: str, right: str, session_id: str):
+        """ Revoke a right to a user from the authentication server.
+        ---
+        Parameters:
+            - username: The username string.
+            - right: The right string.
+            - session_id: The session id string.
+        Throws:
+            - HTTPException: On an unhandled 500 error.
+        """
+        form: str = urlencode({'username': username, 'right': right, 'session_id': session_id})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('DELETE', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            print('Permiso retirado correctamente del usuario')
+        if response.status == 400:
+            print('Error de sintaxis. Pruebe de nuevo')
+        if response.status == 403: # Podría también emplearse el 401
+            print('Usted no tiene los permisos para realizar esta operación')
+        if response.status == 404:
+            print('ERROR 404.')
+        if response.status == 500:
+            print('Error inesperado')
+            raise HTTPException('Server error')
+
+    def has_right(self, username: str, right: str) -> bool:
+        """ Determines whether a given user from the authentication server
+            has a certain right or not.
+        ---
+        Parameters:
+            - username: The user name string.
+            - right: The right name.
+        Returns:
+            True if the user has the given right; false otherwise.
+        Throws:
+            - HTTPException: On an unhandled 500 error.
+        """
+        form: str = urlencode({'username': username, 'right': right})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('DELETE', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            print('Permiso retirado correctamente del usuario')
+        if response.status == 400: # REVISAR ESTO
+            print('Error de sintaxis. Pruebe de nuevo')
+        if response.status == 404:
+            print('ERROR 404')
+        if response.status == 500:
+            print('Error inesperado')
+            raise HTTPException('Server error')
+        
