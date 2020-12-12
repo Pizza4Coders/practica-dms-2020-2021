@@ -204,15 +204,14 @@ class AuthService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('DELETE', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        connection.request('GET', '/users/'+str(username)+'/rights'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            print('Permiso retirado correctamente del usuario')
-        if response.status == 400: # REVISAR ESTO
-            print('Error de sintaxis. Pruebe de nuevo')
+            return True
         if response.status == 404:
             print('ERROR 404')
+            return False
         if response.status == 500:
-            print('Error inesperado')
-            raise HTTPException('Server error')
+            print("Error inesperado")
+            return False
         
