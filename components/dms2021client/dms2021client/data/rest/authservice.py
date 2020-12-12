@@ -102,7 +102,7 @@ class AuthService():
         if response.status == 500:
             raise HTTPException('Server error')
 
-    def create_user(self, username: str, password: str, session_id: str):
+    def create_user(self, username: str, passwd: str, session_id: str):
         """ Creates a user in the authentication server.
         ---
         Parameters:
@@ -112,7 +112,7 @@ class AuthService():
         Throws:
             - HTTPException: On an unhandled 500 error.
         """
-        form: str = urlencode({'username': username, 'password': password, 'session_id': session_id})
+        form: str = urlencode({'username': username, 'password': passwd, 'session_id': session_id})
         headers: dict = {
             'Content-type': 'application/x-www-form-urlencoded'
         }
@@ -121,6 +121,7 @@ class AuthService():
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             print('El usuario ha sido creado correctamente')
+            return
         if response.status == 400:
             print('Error de sintaxis. Pruebe de nuevo')
         if response.status == 403: # Podría también emplearse el 401
@@ -150,6 +151,7 @@ class AuthService():
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             print('Permiso otorgado correctamente')
+            return
         if response.status == 400:
             print('Error de sintaxis. Pruebe de nuevo')
         if response.status == 403: # Podría también emplearse el 401
@@ -177,6 +179,7 @@ class AuthService():
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             print('Permiso retirado correctamente del usuario')
+            return
         if response.status == 400:
             print('Error de sintaxis. Pruebe de nuevo')
         if response.status == 403: # Podría también emplearse el 401
@@ -196,8 +199,6 @@ class AuthService():
             - right: The right name.
         Returns:
             True if the user has the given right; false otherwise.
-        Throws:
-            - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'username': username, 'right': right})
         headers: dict = {
@@ -210,8 +211,7 @@ class AuthService():
             return True
         if response.status == 404:
             print('ERROR 404')
-            return False
         if response.status == 500:
             print("Error inesperado")
-            return False
+        return False
         
