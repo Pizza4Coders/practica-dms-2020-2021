@@ -39,7 +39,7 @@ class Rule(ResultBase):
             "logs",
             metadata,
             Column("rule_name", String(32), primary_key=True),
-            Column("type", String(32), primary_key=True),
+            Column("type", String(32), nullable=False),
             Column("data", String(1024), nullable=False),
             Column("frequency", Integer, nullable=False)
         )

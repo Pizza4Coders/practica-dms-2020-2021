@@ -2,3 +2,5 @@
 """
 
 from .rulenotexsistserror import RuleNotExistsError
+from .logexistserror import LogExistsError
+from .ruleexistserror import RuleExistsError
