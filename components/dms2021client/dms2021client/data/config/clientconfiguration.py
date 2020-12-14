@@ -2,6 +2,7 @@
 """
 
 from dms2021core.data.config import Configuration, ConfigurationValueType
+from typing import Dict
 
 
 class ClientConfiguration(Configuration):
@@ -51,6 +52,22 @@ class ClientConfiguration(Configuration):
             )
         return auth_service_value
 
+    def __get_sensors_service_value(self) -> dict:
+        """ Gets the value of the auth_service configuration dictionary.
+        ---
+        Returns:
+            A dictionary with the authentication service configured parameters.
+        """
+        sensors_service_value: ConfigurationValueType = self.get_value(
+            'sensors'
+        )
+        if not isinstance(sensors_service_value, dict):
+            raise TypeError(
+                'Configuration parameter auth_service is expected to be a dictionary. Received: '
+                + str(type(sensors_service_value))
+            )
+        return sensors_service_value
+
     def get_auth_service_host(self) -> str:
         """ Gets the authentication service host configuration value.
         ---
@@ -63,6 +80,30 @@ class ClientConfiguration(Configuration):
         auth_service_value: dict = self.__get_auth_service_value()
         return str(auth_service_value['host'])
 
+    def get_sensor1_service_host(self) -> str:
+        """ Gets the authentication service host configuration value.
+        ---
+        Returns:
+            A string with the value of authservice host.
+        Throws:
+            - TypeError: if the authservice parameter is not a dictionary.
+        """
+
+        sensors_service_value: dict = self.__get_sensors_service_value()
+        return str(sensors_service_value["sensor1"]['host'])
+
+    def get_sensor2_service_host(self) -> str:
+        """ Gets the authentication service host configuration value.
+        ---
+        Returns:
+            A string with the value of authservice host.
+        Throws:
+            - TypeError: if the authservice parameter is not a dictionary.
+        """
+
+        sensors_service_value: dict = self.__get_sensors_service_value()
+        return str(sensors_service_value["sensor2"]['host'])
+
     def get_auth_service_port(self) -> int:
         """ Gets the authentication service port configuration value.
         ---
@@ -74,6 +115,30 @@ class ClientConfiguration(Configuration):
 
         auth_service_value: dict = self.__get_auth_service_value()
         return int(str(auth_service_value['port']))
+
+    def get_sensor1_service_port(self) -> int:
+        """ Gets the authentication service port configuration value.
+        ---
+        Returns:
+            An integer with the value of authservice port.
+        Throws:
+            - TypeError: if the authservice parameter is not a dictionary.
+        """
+
+        sensors_service_value: dict = self.__get_sensors_service_value()
+        return int(str(sensors_service_value["sensor1"]['port']))
+
+    def get_sensor2_service_port(self) -> int:
+        """ Gets the authentication service port configuration value.
+        ---
+        Returns:
+            An integer with the value of authservice port.
+        Throws:
+            - TypeError: if the authservice parameter is not a dictionary.
+        """
+
+        sensors_service_value: dict = self.__get_sensors_service_value()
+        return int(str(sensors_service_value["sensor2"]['port']))
 
     def get_debug_flag(self) -> bool:
         """ Gets whether the debug flag is set or not.
