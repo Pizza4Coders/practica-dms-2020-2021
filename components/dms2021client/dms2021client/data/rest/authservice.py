@@ -4,7 +4,8 @@
 import json
 from urllib.parse import urlencode
 from http.client import HTTPConnection, HTTPResponse, HTTPException
-from dms2021client.data.rest.exc import InvalidCredentialsError, UnauthorizedError
+from dms2021client.data.rest.exc import BadRequestError, ConflictError, InvalidCredentialsError
+from dms2021client.data.rest.exc import NotFoundError, UnauthorizedError
 
 
 class AuthService():
@@ -110,6 +111,10 @@ class AuthService():
             - password: The password string.
             - session_id: The session id string.
         Throws:
+            - BadRequestError: if the request is malformed.
+            - UnauthorizedError: if the requestor does not meet the security
+              requirements.
+            - ConflictError: if a user with the given username already exists.
             - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'username': username, 'password': passwd, 'session_id': session_id})
@@ -120,16 +125,15 @@ class AuthService():
         connection.request('POST', '/users', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            print('El usuario ha sido creado correctamente')
+            #print('El usuario ha sido creado correctamente')
             return
         if response.status == 400:
-            print('Error de sintaxis. Pruebe de nuevo')
-        if response.status == 403: # Podría también emplearse el 401
-            print('Usted no tiene los permisos para realizar esta operación')
+            raise BadRequestError()
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 409:
-            print('El usuario que intenta crear ya existe')
+            raise ConflictError()
         if response.status == 500:
-            print('Error inesperado')
             raise HTTPException('Server error')
 
     def grant(self, username: str, right: str, session_id: str):
@@ -140,6 +144,9 @@ class AuthService():
             - right: The right string.
             - session_id: The session id string.
         Throws:
+            - UnauthorizedError: if the requestor does not meet the security
+              requirements or no session was provided.
+            - NotFoundError: if the user does not exist or the right does not exist.
             - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'username': username, 'right': right, 'session_id': session_id})
@@ -150,14 +157,13 @@ class AuthService():
         connection.request('POST', '/users/'+str(username)+'/rights'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            print('Permiso otorgado correctamente')
+            #print('Permiso otorgado correctamente')
             return
-        if response.status == 400:
-            print('Error de sintaxis. Pruebe de nuevo')
-        if response.status == 403: # Podría también emplearse el 401
-            print('Usted no tiene los permisos para realizar esta operación')
+        if response.status == 401:
+            raise UnauthorizedError()
+        if response.status == 404:
+            raise NotFoundError()
         if response.status == 500:
-            print('Error inesperado')
             raise HTTPException('Server error')
 
     def revoke(self, username: str, right: str, session_id: str):
@@ -168,6 +174,9 @@ class AuthService():
             - right: The right string.
             - session_id: The session id string.
         Throws:
+            - UnauthorizedError: if the requestor does not meet the security
+              requirements or no session was provided.
+            - NotFoundError: if the user does not exist or the right does not exist.
             - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'username': username, 'right': right, 'session_id': session_id})
@@ -178,16 +187,13 @@ class AuthService():
         connection.request('DELETE', '/users/'+str(username)+'/rights'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            print('Permiso retirado correctamente del usuario')
+            #print('Permiso retirado correctamente del usuario')
             return
-        if response.status == 400:
-            print('Error de sintaxis. Pruebe de nuevo')
-        if response.status == 403: # Podría también emplearse el 401
-            print('Usted no tiene los permisos para realizar esta operación')
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 404:
-            print('ERROR 404.')
+            raise NotFoundError()
         if response.status == 500:
-            print('Error inesperado')
             raise HTTPException('Server error')
 
     def has_right(self, username: str, right: str) -> bool:
@@ -198,7 +204,11 @@ class AuthService():
             - username: The user name string.
             - right: The right name.
         Returns:
-            True if the user has the given right; false otherwise.
+            True if the user has the given right
+        Throws:
+            - NotFoundError: if the user does not have the right, the user does not
+              exist, or the right does not exist.
+            - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'username': username, 'right': right})
         headers: dict = {
@@ -210,8 +220,7 @@ class AuthService():
         if response.status == 200:
             return True
         if response.status == 404:
-            print('ERROR 404')
+            raise NotFoundError()
         if response.status == 500:
-            print("Error inesperado")
+            raise HTTPException('Server error')
         return False
-        

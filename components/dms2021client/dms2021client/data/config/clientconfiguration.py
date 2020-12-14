@@ -2,7 +2,6 @@
 """
 
 from dms2021core.data.config import Configuration, ConfigurationValueType
-from typing import Dict
 
 
 class ClientConfiguration(Configuration):
