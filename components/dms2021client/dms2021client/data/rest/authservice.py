@@ -154,7 +154,7 @@ class AuthService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('POST', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        connection.request('POST', '/users/'+str(username)+'/rights/'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             #print('Permiso otorgado correctamente')
@@ -184,7 +184,7 @@ class AuthService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('DELETE', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        connection.request('DELETE', '/users/'+str(username)+'/rights/'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             #print('Permiso retirado correctamente del usuario')
@@ -215,7 +215,7 @@ class AuthService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/users/'+str(username)+'/rights'+str(right), form, headers)
+        connection.request('GET', '/users/'+str(username)+'/rights/'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             return True
