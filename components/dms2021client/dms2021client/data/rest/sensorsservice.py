@@ -1,14 +1,14 @@
-""" AuthService class module.
+""" SensorService class module.
 """
 
 import json
 from urllib.parse import urlencode
 from http.client import HTTPConnection, HTTPResponse, HTTPException
-from dms2021client.data.rest.exc import InvalidCredentialsError, UnauthorizedError
+from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
 
 
 class SensorsService():
-    """ REST client to connect to the authentication service.
+    """ REST client to connect to the sensor service.
     """
 
     def __init__(self, host: str, port: int):
@@ -17,14 +17,14 @@ class SensorsService():
         Initializes the client.
         ---
         Parameters:
-            - host: The authentication service host string.
-            - port: The authentication service port number.
+            - host: The sensor service host string.
+            - port: The sensor service port number.
         """
         self.__host: str = host
         self.__port: int = port
 
     def __get_connection(self) -> HTTPConnection:
-        """ Creates a new connection to the authentication server.
+        """ Creates a new connection to the sensor server.
         ---
         Returns:
             The connection object.
@@ -32,10 +32,10 @@ class SensorsService():
         return HTTPConnection(self.__host, self.__port)
 
     def is_running(self) -> bool:
-        """ Tests whether the authentication service is running or not.
+        """ Tests whether the sensor service is running or not.
         ---
         Returns:
-            True if the authentication service could be contacted successfully; false otherwise.
+            True if the sensor service could be contacted successfully; false otherwise.
         """
         try:
             connection: HTTPConnection = self.__get_connection()
@@ -48,8 +48,8 @@ class SensorsService():
             return False
         except ConnectionRefusedError:
             return False
-    
-    def get_all_rules(self):
+
+    def get_all_rules(self) -> dict:
         """ Get the list of rules.
         ---
         Returns:
@@ -58,9 +58,17 @@ class SensorsService():
         Throws:
             - HTTPException: On an unhandled 500 error.
         """
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('GET', '/rules/')
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            response_data_json = response.read()
+            return json.loads(response_data_json)
+        if response.status == 500:
+            raise HTTPException('Server error')
+        return {}
 
-
-    def get_rule(self, rulename: str):
+    def get_rule(self, rulename: str) -> dict:
         """ Get the specified rule.
         ---
         Parameters:
@@ -73,6 +81,19 @@ class SensorsService():
             - NotFoundError: If the rule does not exist.
             - HTTPException: On an unhandled 500 error.
         """
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('GET', '/rule/'+str(rulename))
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            response_data_json = response.read()
+            return json.loads(response_data_json)
+        if response.status == 400:
+            raise BadRequestError()
+        if response.status == 404:
+            raise NotFoundError()
+        if response.status == 500:
+            raise HTTPException('Server error')
+        return {}
 
     def create_rule(self, rulename: str, ruletype: str, ruleargs: str, frequency: int):
         """ Create a new rule.
@@ -87,6 +108,23 @@ class SensorsService():
             - ConflictError: If the rule already exists.
             - HTTPException: On an unhandled 500 error.
         """
+        form: str = urlencode({'rulename': rulename, 'ruletype': ruletype,
+        'ruleargs': ruleargs, 'frequency': frequency})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('POST', '/rule/', form, headers)
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            #print('La regla ha sido creada correctamente')
+            return
+        if response.status == 400:
+            raise BadRequestError()
+        if response.status == 409:
+            raise ConflictError()
+        if response.status == 500:
+            raise HTTPException('Server error')
 
     def delete_rule(self, rulename: str):
         """ Removes a specified rule.
@@ -98,8 +136,20 @@ class SensorsService():
             - NotFoundError: If the rule does not exist.
             - HTTPException: On an unhandled 500 error.
         """
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('DELETE', '/rule/'+str(rulename))
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            #print('La regla ha sido eliminada correctamente')
+            return
+        if response.status == 400:
+            raise BadRequestError()
+        if response.status == 404:
+            raise NotFoundError()
+        if response.status == 500:
+            raise HTTPException('Server error')
 
-    def run_rule(self, rulename: str):
+    def run_rule(self, rulename: str) -> dict:
         """ Runs a specified rule.
         ---
         Parameters:
@@ -111,8 +161,21 @@ class SensorsService():
             - NotFoundError: If the rule does not exist.
             - HTTPException: On an unhandled 500 error or if the rule failed.
         """
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('GET', '/rule/' + str(rulename) + '/run/')
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            response_data_json = response.read()
+            return json.loads(response_data_json)
+        if response.status == 400:
+            raise BadRequestError()
+        if response.status == 404:
+            raise NotFoundError()
+        if response.status == 500:
+            raise HTTPException('Server error')
+        return {}
 
-    def get_log(self):
+    def get_log(self) -> dict:
         """ Get the log.
         ---
         Returns:
@@ -121,3 +184,12 @@ class SensorsService():
         Throws:
             - HTTPException: On an unhandled 500 error.
         """
+        connection: HTTPConnection = self.__get_connection()
+        connection.request('GET', '/log/')
+        response: HTTPResponse = connection.getresponse()
+        if response.status == 200:
+            response_data_json = response.read()
+            return json.loads(response_data_json)
+        if response.status == 500:
+            raise HTTPException('Server error')
+        return {}
