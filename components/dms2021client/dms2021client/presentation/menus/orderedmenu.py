@@ -1,13 +1,14 @@
 """Ordered Menu Class
 """
 
+from typing import List
 from dms2021client.presentation.menus import Menu
 
 class OrderedMenu(Menu):
     """Class Ordered Menu
     """
-    _ordered_title = ""
-    _ordered_items = []
+    _ordered_title: str = ""
+    _ordered_items: List[str] = []
 
     def _draw_title(self) -> None:
         """Draws the menu title.
@@ -18,7 +19,7 @@ class OrderedMenu(Menu):
         """Draws the menu items.
         """
         for i, item in enumerate(self._ordered_items, 1):
-            print(i + ". " + item)
+            print(str(i) + ". " + item)
 
     def _draw_menu(self) -> int:
         """Draws the menu.
@@ -26,7 +27,7 @@ class OrderedMenu(Menu):
         self._draw_title()
         self._draw_items()
         print("-"*(40+len(self._ordered_title)))
-        selected_opt = input("Select an option from above: ")
+        selected_opt = int(input("Select an option from above: "))
         return selected_opt
 
     def _set_title(self) -> None:

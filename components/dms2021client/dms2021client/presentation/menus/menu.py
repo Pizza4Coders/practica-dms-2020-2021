@@ -26,7 +26,7 @@ class Menu(ABC):
     def _draw_menu(self) -> int:
         """Draws the menu.
         """
-        return
+        return 0
 
     @abstractmethod
     def _set_title(self) -> None:
