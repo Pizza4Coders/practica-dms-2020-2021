@@ -1,10 +1,11 @@
 """ Logs class module.
 """
 
+from typing import Optional, List
 from datetime import datetime
 from dms2021sensor.data.db.results.log import Log
 from dms2021sensor.data.db.resultsets.rules import Rules
-from dms2021sensor.data.db.exc import RuleNotExistsError, LogExistsError
+from dms2021sensor.data.db.exc import RuleNotExistsError, LogExistsError, LogNotExistsError
 from sqlalchemy.exc import IntegrityError # type: ignore
 from sqlalchemy.orm.session import Session # type: ignore
 
@@ -42,4 +43,35 @@ class Logs():
         except IntegrityError as ex:
             raise LogExistsError("The log already exists") from ex
 
-# TO-DO Get logs
+    @staticmethod
+    def get_last_run(session: Session, rule_name: str) -> Log:
+        """ Gets the latest log for a rule
+        ---
+        Parameters:
+            - session: The session object.
+            - rule_name: The rule name.
+        Returns:
+            The last log for a rule.
+        Throws:
+            - LogNotExistsError if there are not any logs for that rule.
+            - RuleNotExistsError if the rule does not exist.
+        """
+        if not Rules.rule_exists(session, rule_name):
+            raise RuleNotExistsError
+        query = session.query(Log).filter_by(rule_name=rule_name).order_by("time desc")
+        log: Optional[Log] = query.first()
+        if log is None:
+            raise LogNotExistsError
+        return log
+
+    @staticmethod
+    def get_all_runs(session: Session) -> List[Log]:
+        """ Gets all the logs
+        ---
+        Parameters:
+            - session: The session object.
+        Returns:
+            A list with all the logs.
+        """
+        query = session.query(Log)
+        return query.all()
