@@ -1,4 +1,4 @@
-""" UserManager class module.
+""" RuleManager class module.
 """
 
 from typing import List
