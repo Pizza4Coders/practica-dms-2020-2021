@@ -23,7 +23,7 @@ class CreateUser(OrderedMenu):
         self.__username: str = username
         self.__authservice: AuthService = authservice
 
-    def shows_options(self) -> None:
+    def shows_options(self):
         """ Creates a user.
         """
         username: str = input("Escriba el nombre del usuario a crear: ")

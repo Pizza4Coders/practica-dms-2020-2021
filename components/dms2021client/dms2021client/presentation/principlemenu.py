@@ -24,24 +24,24 @@ class PrincipleMenu(OrderedMenu):
         self.__username = username
         self.__authservice = auth_service
 
-    def show_options(self) -> None:
+    def show_options(self):
         """ Shows the options of the menu depends on the rights the user has.
         """
         options: List[str] = []
         functions: List[Callable]
-        if self.__authservice.has_right(self.__username, UserRightName.AdminUsers):
+        if self.__authservice.has_right(self.__username, "AdminUsers"):
             options.append("Crear usuarios")
             functions.append(CreateUser(self.__session_token, self.__username,
             self.__authservice).show_options())
 
-        if self.__authservice.has_right(self.__username, UserRightName.AdminRights):
+        if self.__authservice.has_right(self.__username, "AdminRights"):
             options.append("Modificar permisos de usuarios")
             functions.append(ModifyRights(self.__session_token,
             self.__username, self.__authservice).show_options())
 
-        if (self.__authservice.has_right(self.__username, UserRightName.AdminSensors) or
-        self.__authservice.has_right(self.__username, UserRightName.AdminRules) or
-        self.__authservice.has_right(self.__username, UserRightName.ViewReports)):
+        if (self.__authservice.has_right(self.__username, "AdminSensors") or
+        self.__authservice.has_right(self.__username, "AdminRules") or
+        self.__authservice.has_right(self.__username, "ViewReports")):
             options.append("Gestionar sensores")
             #print("FALTA AÑADIR LLAMADA A CLASE")
 

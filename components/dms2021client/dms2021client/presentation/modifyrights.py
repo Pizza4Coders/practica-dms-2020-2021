@@ -24,7 +24,7 @@ class ModifyRights(OrderedMenu):
         self.__username: str = username
         self.__authservice: AuthService = authservice
 
-    def show_options(self) -> None:
+    def show_options(self):
         """ Shows options to option or revoke rights.
         """
         super().set_title("MODIFICAR PERMISOS")

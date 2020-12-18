@@ -48,7 +48,7 @@ class OrderedMenu(Menu):
             print(str(i) + ". " + item)
         print("-"*(40+len(self._ordered_title)))
 
-    def show_options(self) -> None:
+    def show_options(self):
         """ Display the menu and controls the actions to be executed when one option
         have been selected.
         """

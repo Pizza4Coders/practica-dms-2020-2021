@@ -20,7 +20,7 @@ class Logout(OrderedMenu):
         self.__session_token: str = session_token
         self.__authservice: AuthService = authservice
 
-    def show_options(self) -> None:
+    def show_options(self):
         """ Log out.
         """
         try:
@@ -30,3 +30,4 @@ class Logout(OrderedMenu):
             print("Sesión incorrecta")
         except Exception:
             print("Ha ocurrido un error inesperado")
+
