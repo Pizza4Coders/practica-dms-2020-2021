@@ -59,7 +59,7 @@ class RuleManager(ManagerBase):
         """ #TODO Document this later
         session = self.get_schema().new_session()
         return Rules.get_all_rules(session)
-    
+
     def run_rule(self, rule_name: str, log_manager: LogManager) -> str:
         """ Runs a rule and logs its results
         ---

@@ -48,6 +48,6 @@ class Log(ResultBase):
         """
         return str({
             "rule_name": self.rule_name,
-            "time": self.time,
+            "time": self.time.strftime("%d %b %Y %H:%M:%S"),
             "result": self.result
         })
