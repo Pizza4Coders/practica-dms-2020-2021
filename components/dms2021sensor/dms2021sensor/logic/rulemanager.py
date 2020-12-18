@@ -2,10 +2,13 @@
 """
 
 from typing import List
+from datetime import datetime
 from dms2021sensor.data.db.resultsets import Rules
 from dms2021sensor.data.db.results import Rule
 from dms2021sensor.logic.managerbase import ManagerBase
-
+from dms2021sensor.logic import LogManager
+from dms2021sensor.logic.rulerunners import CommandRuleRunner, FileRuleRunner
+from dms2021sensor.data.db.exc import RuleNotExistsError
 
 class RuleManager(ManagerBase):
     """ Class responsible of the rule management logic.
@@ -56,3 +59,19 @@ class RuleManager(ManagerBase):
         """ #TODO Document this later
         session = self.get_schema().new_session()
         return Rules.get_all_rules(session)
+    
+    def run_rule(self, rule_name: str, log_manager: LogManager) -> str:
+        """ Runs a rule and logs its results
+        ---
+        """ #TODO Document
+        rule = self.get_rule(rule_name)
+        if rule.type == "command":
+            result = CommandRuleRunner.run_rule(rule)
+            log_manager.create_log(rule_name, datetime.now(), result)
+            return result
+        elif rule.type == "file":
+            result = FileRuleRunner.run_rule(rule)
+            log_manager.create_log(rule_name, datetime.now(), result)
+            return result
+        else:
+            raise RuleNotExistsError

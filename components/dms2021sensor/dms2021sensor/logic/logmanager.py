@@ -11,7 +11,7 @@ from dms2021sensor.logic.managerbase import ManagerBase
 class LogManager(ManagerBase):
     """ Class responsible of the log management logic.
     """
-    def create_rule(self, rule_name: str, time: datetime, result: str) -> None:
+    def create_log(self, rule_name: str, time: datetime, result: str) -> None:
         """ Creates a new log
         ---
         """ #TODO Document this later
