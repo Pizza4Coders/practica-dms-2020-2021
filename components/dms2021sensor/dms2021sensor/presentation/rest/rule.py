@@ -76,7 +76,8 @@ class Rule():
         """ Gets a rule.
         ---
         Parameters:
-            - rule_name: The rule name.
+            - rulename: The rule name string.
+            - user: The username string.
         Returns:
             A RestResponse object holding the result of the operation.
         """
@@ -96,6 +97,9 @@ class Rule():
     def delete_rule(self, rule_name: str, user: str) -> RestResponse:
         """ Deletes a rule.
         ---
+        Parameters:
+            - rulename: The rule name string.
+            - user: The username string.
         Returns:
             A RestResponse object holding the result of the operation.
         """
@@ -115,6 +119,11 @@ class Rule():
         user: str) -> RestResponse:
         """ Creates a rule.
         ---
+        Parameters:
+            - rulename: The rule name string.
+            - ruletype: The type of the rule string. (text: command, file)
+            - ruleargs: A command or a file path.
+            - frequency (seconds): 0 if it does not execute automatically.
         Returns:
             A RestResponse object holding the result of the operation.
         """

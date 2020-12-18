@@ -22,6 +22,7 @@ class Log():
         Parameters:
             - rule_manager: Instance responsible of the rule logic operations.
             - log_manager: Instance responsible of the log logic operations.
+            - auth_service: Instance responsible of the auth logic operations.
         """
         self.__set_rule_manager(rule_manager)
         self.__set_log_manager(log_manager)
@@ -71,7 +72,7 @@ class Log():
         """ Sets the new user manager object to be used by this instance.
         ---
         Parameters:
-            - rule_manager: The new rule manager instance.
+            - auth_service: Instance responsible of the auth logic operations.
         """
         self.__auth_service = auth_service
 
@@ -79,7 +80,8 @@ class Log():
         """ Creates a new user.
         ---
         Parameters:
-            - username: The rule name string.
+            - rulename: The rule name string.
+            - user: The username string.
         Returns:
             A RestResponse object holding the result of the operation.
         """
@@ -104,6 +106,8 @@ class Log():
     def get_log(self, user: str) -> RestResponse:
         """ Gets the log.
         ---
+        Parameters:
+            - user: The username string.
         Returns:
             A RestResponse object holding the result of the operation.
         """
