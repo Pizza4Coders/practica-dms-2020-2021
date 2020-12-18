@@ -39,3 +39,15 @@ class Log(ResultBase):
             Column("time", DateTime, primary_key=True),
             Column("result", String(8192), nullable=False)
         )
+
+    def __str__(self) -> str:
+        """ Gets the object as a string.
+        ---
+        Returns:
+            The object formatted as a json-formatted string.
+        """
+        return str({
+            "rule_name": self.rule_name,
+            "time": self.time,
+            "result": self.result
+        })

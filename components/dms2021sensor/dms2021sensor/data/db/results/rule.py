@@ -54,3 +54,16 @@ class Rule(ResultBase):
         return{
             "logs": relationship(Log, backref="rule")
         }
+
+    def __str__(self) -> str:
+        """ Gets the object as a string.
+        ---
+        Returns:
+            The object formatted as a json-formatted string.
+        """
+        return str({
+            "rule_name": self.rule_name,
+            "type": self.type,
+            "data": self.data,
+            "frequency": self.frequency
+        })
