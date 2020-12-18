@@ -1,7 +1,6 @@
 """ Principlemenu class module.
 """
 from typing import List, Callable
-from dms2021core.data import UserRightName
 from dms2021client.data.rest import AuthService
 from dms2021client.presentation import CreateUser, ModifyRights, Logout
 from .menus import OrderedMenu

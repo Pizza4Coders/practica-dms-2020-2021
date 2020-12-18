@@ -30,4 +30,3 @@ class Logout(OrderedMenu):
             print("Sesión incorrecta")
         except Exception:
             print("Ha ocurrido un error inesperado")
-
