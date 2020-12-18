@@ -1,7 +1,9 @@
-""" UserManager class module.
+""" RuleManager class module.
 """
 
+from typing import List
 from dms2021sensor.data.db.resultsets import Rules
+from dms2021sensor.data.db.results import Rule
 from dms2021sensor.logic.managerbase import ManagerBase
 
 
@@ -20,3 +22,37 @@ class RuleManager(ManagerBase):
             raise ValueError("An argument is required")
         session = self.get_schema().new_session()
         Rules.create(session, rule_name, rule_type, data, frequency)
+
+    def rule_exists(self, rule_name: str) -> bool:
+        """ Checks if a rule exists
+        ---
+        """ #TODO Document this later
+        if not rule_name:
+            raise ValueError("The rule name must not be empty.")
+        session = self.get_schema().new_session
+        return Rules.rule_exists(session, rule_name)
+
+    def get_rule(self, rule_name: str) -> Rule:
+        """ Gets a rule
+        ---
+        """ #TODO Document this later
+        if not rule_name:
+            raise ValueError("The rule name must not be empty.")
+        session = self.get_schema().new_session()
+        return Rules.get_rule(session, rule_name)
+
+    def delete_rule(self, rule_name: str) -> bool:
+        """ Deletes a rule.
+        ---
+        """ #TODO Document this later
+        if not rule_name:
+            raise ValueError("The rule name must not be empty.")
+        session = self.get_schema().new_session()
+        return Rules.delete_rule(session, rule_name)
+
+    def get_all_rules(self) -> List[Rule]:
+        """ Gets all rules
+        ---
+        """ #TODO Document this later
+        session = self.get_schema().new_session()
+        return Rules.get_all_rules(session)
