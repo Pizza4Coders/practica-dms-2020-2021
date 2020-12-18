@@ -20,6 +20,7 @@ class Rule():
         ---
         Parameters:
             - rule_manager: Instance responsible of the rule logic operations.
+            - auth_service: Instance responsible of the auth logic operations.
         """
         self.__set_rule_manager(rule_manager)
         self.__set_auth_service(auth_service)
@@ -52,13 +53,15 @@ class Rule():
         """ Sets the new user manager object to be used by this instance.
         ---
         Parameters:
-            - rule_manager: The new rule manager instance.
+            - auth_service: The new auth manager instance.
         """
         self.__auth_service = auth_service
 
     def get_all_rules(self, user: str) -> RestResponse:
         """ Gets all rules.
         ---
+        Parameters:
+            - user: The username string.
         Returns:
             A RestResponse object holding the result of the operation.
         """
@@ -124,6 +127,7 @@ class Rule():
             - ruletype: The type of the rule string. (text: command, file)
             - ruleargs: A command or a file path.
             - frequency (seconds): 0 if it does not execute automatically.
+            - user: The username string.
         Returns:
             A RestResponse object holding the result of the operation.
         """
