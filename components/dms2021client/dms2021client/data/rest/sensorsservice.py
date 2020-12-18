@@ -5,6 +5,7 @@ import json
 from urllib.parse import urlencode
 from http.client import HTTPConnection, HTTPResponse, HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
+from dms2021client.data.rest.exc import UnauthorizedError
 
 
 class SensorsService():
@@ -49,30 +50,39 @@ class SensorsService():
         except ConnectionRefusedError:
             return False
 
-    def get_all_rules(self) -> dict:
+    def get_all_rules(self, user: str) -> dict:
         """ Get the list of rules.
         ---
+        Parameters:
+            - user: The username string.
         Returns:
             A dictionary with the list of rules, where each has rule_name, type,
             data and frequency
         Throws:
             - HTTPException: On an unhandled 500 error.
         """
+        form: str = urlencode({'username': user})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/rules/')
+        connection.request('GET', '/rules/', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
             return json.loads(response_data_json)
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 500:
             raise HTTPException('Server error')
         return {}
 
-    def get_rule(self, rulename: str) -> dict:
+    def get_rule(self, rulename: str, user: str) -> dict:
         """ Get the specified rule.
         ---
         Parameters:
             - rulename: The rule name string.
+            - user: The username string.
         Returns:
             A dictionary with a rule, where it has rule_name, type,
             data and frequency
@@ -81,21 +91,28 @@ class SensorsService():
             - NotFoundError: If the rule does not exist.
             - HTTPException: On an unhandled 500 error.
         """
+        form: str = urlencode({'username': user})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/rule/'+str(rulename))
+        connection.request('GET', '/rule/'+str(rulename), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
             return json.loads(response_data_json)
         if response.status == 400:
             raise BadRequestError()
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 404:
             raise NotFoundError()
         if response.status == 500:
             raise HTTPException('Server error')
         return {}
 
-    def create_rule(self, rulename: str, ruletype: str, ruleargs: str, frequency: int):
+    def create_rule(self, rulename: str, ruletype: str, ruleargs: str, frequency: int,
+    user: str):
         """ Create a new rule.
         ---
         Parameters:
@@ -103,13 +120,14 @@ class SensorsService():
             - ruletype: The type of the rule string. (text: command, file)
             - ruleargs: A command or a file path.
             - frequency (seconds): 0 if it does not execute automatically.
+            - user: The username string.
         Throws:
             - BadRequestError: If the request is malformed.
             - ConflictError: If the rule already exists.
             - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'rulename': rulename, 'ruletype': ruletype,
-        'ruleargs': ruleargs, 'frequency': frequency})
+        'ruleargs': ruleargs, 'frequency': frequency, 'username': user})
         headers: dict = {
             'Content-type': 'application/x-www-form-urlencoded'
         }
@@ -121,39 +139,49 @@ class SensorsService():
             return
         if response.status == 400:
             raise BadRequestError()
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 409:
             raise ConflictError()
         if response.status == 500:
             raise HTTPException('Server error')
 
-    def delete_rule(self, rulename: str):
+    def delete_rule(self, rulename: str, user: str):
         """ Removes a specified rule.
         ---
         Parameters:
             - rulename: The rule name string.
+            - user: The username string.
         Throws:
             - BadRequestError: If the request is malformed.
             - NotFoundError: If the rule does not exist.
             - HTTPException: On an unhandled 500 error.
         """
+        form: str = urlencode({'username': user})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('DELETE', '/rule/'+str(rulename))
+        connection.request('DELETE', '/rule/'+str(rulename), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             #print('La regla ha sido eliminada correctamente')
             return
         if response.status == 400:
             raise BadRequestError()
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 404:
             raise NotFoundError()
         if response.status == 500:
             raise HTTPException('Server error')
 
-    def run_rule(self, rulename: str) -> dict:
+    def run_rule(self, rulename: str, user: str) -> dict:
         """ Runs a specified rule.
         ---
         Parameters:
             - rulename: The rule name string.
+            - user: The username string.
         Returns:
             A dictionary with the output (str).
         Throws:
@@ -161,35 +189,49 @@ class SensorsService():
             - NotFoundError: If the rule does not exist.
             - HTTPException: On an unhandled 500 error or if the rule failed.
         """
+        form: str = urlencode({'username': user})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/rule/' + str(rulename) + '/run/')
+        connection.request('GET', '/rule/' + str(rulename) + '/run/', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
             return json.loads(response_data_json)
         if response.status == 400:
             raise BadRequestError()
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 404:
             raise NotFoundError()
         if response.status == 500:
             raise HTTPException('Server error')
         return {}
 
-    def get_log(self) -> dict:
+    def get_log(self, user: str) -> dict:
         """ Get the log.
         ---
+        Parameters:
+            - user: The username string.
         Returns:
             A dictionary with the list of results, where it has rule_name, time and
             result.
         Throws:
             - HTTPException: On an unhandled 500 error.
         """
+        form: str = urlencode({'username': user})
+        headers: dict = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/log/')
+        connection.request('GET', '/log/', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
             return json.loads(response_data_json)
+        if response.status == 401:
+            raise UnauthorizedError()
         if response.status == 500:
             raise HTTPException('Server error')
         return {}
