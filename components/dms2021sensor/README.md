@@ -44,6 +44,10 @@ This service exposes a REST API so other services/applications can interact with
 - `/rules/` [`GET`]
 
   Gets all configured rules.
+  - Security:
+    - The requestor must have the `AdminRules` permission.
+  - Parameters:
+    - `username` [form data] (`str`): The requestor's user name.
   - Returns:
     - `200 OK`. The response content (`application/json`) is a JSON dictionary containing a list of rules with the following data on each element:
       - `rule_name`: The name of the rule
@@ -54,7 +58,10 @@ This service exposes a REST API so other services/applications can interact with
 - `/rule/<rule_name>/` [`GET`]
 
   Gets info about a rule.
+  - Security:
+    - The requestor must have the `AdminRules` permission.
   - Parameters:
+    - `username` [form data] (`str`): The requestor's user name.
     - `rule_name`: [path] (`str`): The name of the rule.
   - Returns:
     - `200 OK` if the rule exists. The response content is a JSON dictionary with the data in the above response.
@@ -64,7 +71,10 @@ This service exposes a REST API so other services/applications can interact with
 - `/rule/` [`POST`]
 
   Creates a new rule.
+  - Security:
+    - The requestor must have the `AdminRules` permission.
   - Parameters:
+    - `username` [form data] (`str`): The requestor's user name.
     - `rule_name`: [form data] (`str`): The name of the rule
     - `type`: [form data] (`str`): Type of rule. This can be `command` if it runs a command or `file` if it checks for the presence of a file.
     - `data`: [form data] (`str`) If `type` was `command`, the command that runs, or if it was `file`, the path to the file that is checked.
@@ -77,7 +87,10 @@ This service exposes a REST API so other services/applications can interact with
 - `/rule/<rule_name>/` [`DELETE`]
 
   Deletes an existing rule.
+  - Security:
+    - The requestor must have the `AdminRules` permission.
   - Parameters:
+    - `username` [form data] (`str`): The requestor's user name.
     - `rule_name` [path] (`str`): The rule name.
   - Returns:
     - `200 OK` if the rule was deleted.
@@ -87,8 +100,11 @@ This service exposes a REST API so other services/applications can interact with
 - `/rule/<rule_name>/run/` [`GET`]
 
   Runs a rule and returns its value.
+  - Security:
+    - The requestor must have the `AdminRules` and `ViewReports` permissions.
   - Parameters:
-    `rule_name` [path] (`str`): The rule name.
+    - `username` [form data] (`str`): The requestor's user name.
+    - `rule_name` [path] (`str`): The rule name.
   - Returns:
     - `200 OK` if the rule is sucessfully run. The response content is a JSON dictionary containing:
       - `result`: the value that was returned. This will be always an string.
@@ -99,6 +115,10 @@ This service exposes a REST API so other services/applications can interact with
 - `/log/` [`GET`]
 
   Returns the history of rule executions.
+  - Security:
+    - The requestor must have the `ViewReports` permission.
+  - Parameters:
+    - `username` [form data] (`str`): The requestor's user name.
   - Returns:
     - `200 OK`. The response content is a dictionary containing a list with the following data on each element:
       - `rule_name`: The name of the rule.
