@@ -91,7 +91,7 @@ This service exposes a REST API so other services/applications can interact with
     `rule_name` [path] (`str`): The rule name.
   - Returns:
     - `200 OK` if the rule is sucessfully run. The response content is a JSON dictionary containing:
-      - `result`: the value that was returned. This can be a string for a `command` type rule and a boolean for a `file` rule.
+      - `result`: the value that was returned. This will be always an string.
     - `400 Bad Request` if the request is malformed.
     - `404 Not found` if the rule does not exist.
     - `500 Internal Server error` if the rule failed to run.
