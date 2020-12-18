@@ -54,6 +54,7 @@ This service exposes a REST API so other services/applications can interact with
       - `type`: Type of rule. This can be `command` if it runs a command or `file` if it checks for the presence of a file.
       - `data`: If `type` was `command`, the command that runs, or if it was `file`, the path to the file that is checked.
       - `frequency`: Time in seconds between each automatic run of the rule. 0 if the rule does not run automatically.
+    - `401 Unauthorized` if the requestor does not meet the security requirements.
 
 - `/rule/<rule_name>/` [`GET`]
 
@@ -66,6 +67,7 @@ This service exposes a REST API so other services/applications can interact with
   - Returns:
     - `200 OK` if the rule exists. The response content is a JSON dictionary with the data in the above response.
     - `400 Bad Request` if the request is malformed (e.g., no rule_name was sent)
+    - `401 Unauthorized` if the requestor does not meet the security requirements.
     - `404 Not found` if the rule does not exist.
   
 - `/rule/` [`POST`]
@@ -82,6 +84,7 @@ This service exposes a REST API so other services/applications can interact with
   - Returns:
     - `200 OK` if the rule was created sucessfully.
     - `400 Bad Request` if the request is malformed.
+    - `401 Unauthorized` if the requestor does not meet the security requirements.
     - `409 Conflict` if another rule exists with the same name.
 
 - `/rule/<rule_name>/` [`DELETE`]
@@ -95,6 +98,7 @@ This service exposes a REST API so other services/applications can interact with
   - Returns:
     - `200 OK` if the rule was deleted.
     - `400 Bad Request` if the request is malformed.
+    - `401 Unauthorized` if the requestor does not meet the security requirements.
     - `404 Not found` if the rule does not exist.
 
 - `/rule/<rule_name>/run/` [`GET`]
@@ -109,6 +113,7 @@ This service exposes a REST API so other services/applications can interact with
     - `200 OK` if the rule is sucessfully run. The response content is a JSON dictionary containing:
       - `result`: the value that was returned. This will be always an string.
     - `400 Bad Request` if the request is malformed.
+    - `401 Unauthorized` if the requestor does not meet the security requirements.
     - `404 Not found` if the rule does not exist.
     - `500 Internal Server error` if the rule failed to run.
   
@@ -124,3 +129,4 @@ This service exposes a REST API so other services/applications can interact with
       - `rule_name`: The name of the rule.
       - `time`: The time of the result.
       - `result`: The result of the rule.
+    - `401 Unauthorized` if the requestor does not meet the security requirements.
