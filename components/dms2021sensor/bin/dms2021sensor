@@ -1,8 +1,117 @@
 #!/usr/bin/env python3
 
-import time
+import logging
+from flask import Flask, request
+from flask.logging import default_handler
 
-print("This file is a stub. Replace this behaviour with the actual service code.")
+from dms2021core.data.rest import RestResponse
+from dms2021sensor.data.config import SensorConfiguration
+from dms2021sensor.data.db import Schema
+from dms2021sensor.data.rest import AuthService
+from dms2021sensor.logic import LogManager, RuleManager
+from dms2021sensor.logic.rulerunners import RunnerThread
+from dms2021sensor.presentation.rest import Rule, Log
 
-while True:
-    time.sleep(1)
+app = Flask(__name__)
+root_logger = logging.getLogger()
+root_logger.addHandler(default_handler)
+
+cfg: SensorConfiguration = SensorConfiguration()
+cfg.load_from_file(cfg.default_config_file())
+auth_svc: AuthService(cfg.get_auth_service_host(), cfg.get_auth_service_port())
+db: Schema = Schema(cfg)
+rule_manager: RuleManager = RuleManager(cfg, db)
+log_manager: LogManager = LogManager(cfg, db)
+rule_rest_api: Rule = Rule(rule_manager, auth_svc)
+log_rest_api: Log = Log(rule_manager, log_manager, auth_svc)
+
+@app.route('/', methods=['GET'])
+def is_running():
+    return ('', 200, {'Content-Type': 'text/plain'})
+
+@app.route("/rules/", methods=["GET"])
+def get_all_rules():
+    try:
+        user: str = request.form['username']
+    except KeyError:
+        user: str = ""
+    response: RestResponse = rule_rest_api.get_all_rules(user)
+    return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
+
+@app.route("/rule/<string:rulename>", methods=["GET"])
+def get_rule(rulename: str):
+    try:
+        user: str = request.form['username']
+    except KeyError:
+        user: str = ""
+    response: RestResponse = rule_rest_api.get_rule(rulename, user)
+    return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
+
+@app.route("/rule/", methods=["POST"])
+def create_rule(rulename: str):
+    try:
+        user: str = request.form['username']
+    except KeyError:
+        user: str = ""
+    try:
+        rulename: str = request.form['rule_name']
+    except KeyError:
+        rulename: str = ""
+    try:
+        ruletype: str = request.form['type']
+    except KeyError:
+        ruletype: str = ""
+    try:
+        data: str = request.form['data']
+    except KeyError:
+        data: str = ""
+    try:
+        freq: int = request.form['frequency']
+    except KeyError:
+        freq: int = 0
+    response: RestResponse = rule_rest_api.create_rule(rulename, ruletype, data, freq, user)
+    return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
+
+@app.route("/rule/<string:rulename>", methods=["DELETE"])
+def delete_rule(rulename: str):
+    try:
+        user: str = request.form['username']
+    except KeyError:
+        user: str = ""
+    response: RestResponse = rule_rest_api.delete_rule(rulename, user)
+    return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
+
+@app.route("/rule/<string:rulename>/run/", methods=["GET"])
+def run_rule(rulename: str):
+    try:
+        user: str = request.form['username']
+    except KeyError:
+        user: str = ""
+    response: RestResponse = log_rest_api.run_rule(rulename, user)
+    return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
+
+@app.route("/log/", methods=["GET"])
+def get_log():
+    try:
+        user: str = request.form['username']
+    except KeyError:
+        user: str = ""
+    response: RestResponse = log_rest_api.get_log(user)
+    return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    if cfg.get_debug_flag():
+        app.logger.error(str(type(e)))
+        app.logger.error(e)
+    return ('', 500)
+
+if __name__ == '__main__':
+    background_thread = RunnerThread()
+    background_thread.set_up(rule_manager, log_manager)
+    background_thread.start()
+    app.run(
+        host=cfg.get_service_host(),
+        port=cfg.get_service_port(),
+        debug=cfg.get_debug_flag()
+    )
