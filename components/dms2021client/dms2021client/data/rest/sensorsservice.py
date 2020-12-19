@@ -50,8 +50,8 @@ class SensorsService():
         except ConnectionRefusedError:
             return False
 
-    def get_all_rules(self, user: str) -> dict:
-        """ Get the list of rules.
+    def get_all_rules(self, user: str) -> List[dict]:
+        """ Gets the list of rules.
         ---
         Parameters:
             - user: The username string.
@@ -78,7 +78,7 @@ class SensorsService():
         return {}
 
     def get_rule(self, rulename: str, user: str) -> dict:
-        """ Get the specified rule.
+        """ Gets the specified rule.
         ---
         Parameters:
             - rulename: The rule name string.
@@ -113,7 +113,7 @@ class SensorsService():
 
     def create_rule(self, rulename: str, ruletype: str, ruleargs: str, frequency: int,
     user: str):
-        """ Create a new rule.
+        """ Creates a new rule.
         ---
         Parameters:
             - rulename: The rule name string.
@@ -135,7 +135,6 @@ class SensorsService():
         connection.request('POST', '/rule/', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            #print('La regla ha sido creada correctamente')
             return
         if response.status == 400:
             raise BadRequestError()
@@ -165,7 +164,6 @@ class SensorsService():
         connection.request('DELETE', '/rule/'+str(rulename), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            #print('La regla ha sido eliminada correctamente')
             return
         if response.status == 400:
             raise BadRequestError()
@@ -176,7 +174,7 @@ class SensorsService():
         if response.status == 500:
             raise HTTPException('Server error')
 
-    def run_rule(self, rulename: str, user: str) -> dict:
+    def run_rule(self, rulename: str, user: str) -> List[dict]:
         """ Runs a specified rule.
         ---
         Parameters:
@@ -210,7 +208,7 @@ class SensorsService():
         return {}
 
     def get_log(self, user: str) -> dict:
-        """ Get the log.
+        """ Gets the log.
         ---
         Parameters:
             - user: The username string.
