@@ -111,6 +111,7 @@ if __name__ == '__main__':
     rule_manager.create_rule("Estado memoria", "command", "free -m", 30)
     rule_manager.create_rule("Uso CPU", "command",
         "mpstat | grep -A 5 \"%idle\" | tail -n 1 | awk -F " " '{print 100 -  $ 12}'a", 30)
+    rule_manager.create_rule("Info kernel", "command", "uname -a", 0)
 
     background_thread = RunnerThread()
     background_thread.set_up(rule_manager, log_manager)
