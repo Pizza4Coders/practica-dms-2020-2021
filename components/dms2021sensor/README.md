@@ -31,6 +31,42 @@ The configuration file is a YAML dictionary with the following configurable para
 
 Just run `dms2021sensor` as any other program.
 
+# Sensor architecture
+
+## SOLID Principles
+- **Single responsibility:** The code is split to allow us to change some parts of the code without affecting others that are unrelated.
+- **Open/Close:** Some parts of the code can be extended using inheritance without having to modify existing classes.
+- **Liskov substitution:** The subclasses extends the code doing the same as the superclasses (i.e.: on logic/rulerunners).
+- **Interface segregation:** We split the code so you don't need to use Rule interfaces if you only want to work with the Logs
+- **Dependency inversion:** Class usually depends on abstractions instead of depending on concretions (i.e. if we change the database, the methods should work in the same way)
+
+## Model-view-controller
+We use MVC to split the code on these three parts:
+- **Model:** The part that is responsible of working with the data. This is inside the data folder. There we have the part that stores the rules and the logs on an internal database, the configuration and the communication with the auth service to check the permissions.
+- **View:** The part of the code that will interact with the client. This is inside the presentation folder.
+- **Controller:** The part of the code that manages most of the logic of the sensor, such as the background thread that automatically runs the rules and logs the results, and the rule and log managers that allows the communication between the Model and the View.
+
+## Design patterns
+- **Factory method:** We use this in the resultsets package of the database, and we create there the Rule and Log objects instead of having to create them directly calling those classes.
+- **Facade:** We use this on some parts of the code, such as on the presentation level, so the client only has to interact with a method and we will run code involving multiple classes and at the logic level, so running a method on the manager will interact with multiple classes on the lower levels.
+- **Strategy:** We use this at the rule runners so we can work in a different way depending on the type of a rule (i.e. we have to do different things depending if we have to run a command or check if a file exists)
+
+## Code structure
+- bin/: Here we have the starting point of our program. There we instance some classes that we need to work (such as the database and the managers) and we add our REST specifications.
+- dms2021sensor/: The main package.
+  - data/
+    - config/: Here we have our config-loaders.
+    - db/: The sensor database.
+      - exc/: Database related exceptions.
+      - results/: The data classes we store.
+      - resultsets/: Some operations of the data classes.
+    - rest/: Here we have the communication with the auth service.
+  - logic/: Here we have our data managers
+    - rulerunners/: Here we have the background thread and the code that runs the rules on the system.
+      - exc/: Exceptions that can be raised when we try to run the rules.
+  - presentation/:
+    - rest/: Here we have the code that receives the rest requests and generates its response
+
 ## REST API specification
 
 This service exposes a REST API so other services/applications can interact with it.

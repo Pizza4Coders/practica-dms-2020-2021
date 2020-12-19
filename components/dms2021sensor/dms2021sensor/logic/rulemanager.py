@@ -16,7 +16,15 @@ class RuleManager(ManagerBase):
     def create_rule(self, rule_name: str, rule_type: str, data: str, frequency: int) -> None:
         """ Creates a new rule
         ---
-        """ #TODO Documentar después
+        Parameters:
+            - rule_name: The rule name.
+            - rule_type: A string with the type of rule.
+            - data: The argument for the rule. A command or a path to a file.
+            - frequency: Time in seconds between automatic runs. 0 to disable.
+        Throws:
+            - ValueError if any of the parameters is missing.
+            - RuleExistsError if a rule already exists.
+        """
         if not rule_name:
             raise ValueError("A non-empty rule name is needed.")
         if rule_type not in ["file", "command"]:
@@ -29,7 +37,13 @@ class RuleManager(ManagerBase):
     def rule_exists(self, rule_name: str) -> bool:
         """ Checks if a rule exists
         ---
-        """ #TODO Document this later
+        Parameters:
+            - rule_name: The rule name.
+        Returns:
+            True if the rule exists, false if not.
+        Throws:
+            - ValueError if the rule name is missing.
+        """
         if not rule_name:
             raise ValueError("The rule name must not be empty.")
         session = self.get_schema().new_session
@@ -38,7 +52,14 @@ class RuleManager(ManagerBase):
     def get_rule(self, rule_name: str) -> Rule:
         """ Gets a rule
         ---
-        """ #TODO Document this later
+        Parameters:
+            - rule_name: The rule name.
+        Returns:
+            A Rule object with the rule.
+        Throws:
+            - ValueError if the rule name is missing.
+            - RuleNotExistsError if the rule does not exist.
+        """
         if not rule_name:
             raise ValueError("The rule name must not be empty.")
         session = self.get_schema().new_session()
@@ -47,7 +68,14 @@ class RuleManager(ManagerBase):
     def delete_rule(self, rule_name: str) -> bool:
         """ Deletes a rule.
         ---
-        """ #TODO Document this later
+        Parameters:
+            - rule_name: The rule name.
+        Returns:
+            True if the rule was deleted.
+        Throws:
+            - ValueError if the rule name is missing.
+            - RuleNotExistsError if the rule does not exist.
+        """
         if not rule_name:
             raise ValueError("The rule name must not be empty.")
         session = self.get_schema().new_session()
@@ -56,22 +84,32 @@ class RuleManager(ManagerBase):
     def get_all_rules(self) -> List[Rule]:
         """ Gets all rules
         ---
-        """ #TODO Document this later
+        Returns:
+            A list with all the rules.
+        """
         session = self.get_schema().new_session()
         return Rules.get_all_rules(session)
 
     def run_rule(self, rule_name: str, log_manager: LogManager) -> str:
         """ Runs a rule and logs its results
         ---
-        """ #TODO Document
+        Parameters:
+            - rule_name: A string with the rule name.
+            - log_manager: A instance of the LogManager
+        Returns:
+            A string with the result of the action.
+        Throws:
+            - ValueError if a parameter is missing.
+            - RuleNotExistsError if the rule does not exist.
+            - LogExistsError if a log already exists
+        """
         rule = self.get_rule(rule_name)
         if rule.type == "command":
             result = CommandRuleRunner.run_rule(rule)
             log_manager.create_log(rule_name, datetime.now(), result)
             return result
-        elif rule.type == "file":
+        if rule.type == "file":
             result = FileRuleRunner.run_rule(rule)
             log_manager.create_log(rule_name, datetime.now(), result)
             return result
-        else:
-            raise RuleNotExistsError
+        raise RuleNotExistsError

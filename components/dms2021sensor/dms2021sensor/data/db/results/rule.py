@@ -3,7 +3,7 @@
 
 from typing import Dict
 from sqlalchemy import Table, MetaData, Column, String, Integer # type: ignore
-from sqlalchemy.orm import relationship # type: ignore
+from sqlalchemy.orm import relationship, backref # type: ignore
 from dms2021sensor.data.db.results.log import Log
 from .resultbase import ResultBase
 
@@ -52,7 +52,7 @@ class Rule(ResultBase):
             A dictionary with the mapping properties.
         """
         return{
-            "logs": relationship(Log, backref="rule")
+            "logs": relationship(Log, backref=backref("rule", cascade="all, delete-orphan"))
         }
 
     def __str__(self) -> str:
