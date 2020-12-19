@@ -4,10 +4,9 @@ import time
 from typing import Tuple
 from getpass import getpass
 from dms2021client.data.config import ClientConfiguration
-from dms2021client.data.rest import AuthService
+from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.data.rest.exc import InvalidCredentialsError
-from dms2021client.presentation.menus import OrderedMenu
-from dms2021client.presentation import PrincipleMenu
+from dms2021client.presentation import Menu, MainMenu
 
 class ClientManager():
     """ Execute the application.
@@ -21,14 +20,21 @@ class ClientManager():
         self.__cfg: ClientConfiguration = ClientConfiguration()
         self.__cfg.load_from_file(self.__cfg.default_config_file())
         self.__authservice: AuthService = AuthService(self.__cfg.get_auth_service_host(),
-        self.__cfg.get_auth_service_port())
+            self.__cfg.get_auth_service_port())
+        self.__sensor1_svc: SensorsService = SensorsService(
+            self.__cfg.get_sensor1_service_host(),
+            self.__cfg.get_sensor1_service_port()
+        )
+        self.__sensor2_svc: SensorsService = SensorsService(
+            self.__cfg.get_sensor2_service_host(),
+            self.__cfg.get_sensor2_service_port()
+        )
         self.__username, self.__session_id = self.login()
 
-        self.__page: OrderedMenu = PrincipleMenu(self.__session_id,
-        self.__username, self.__authservice)
+        self.__page: Menu = MainMenu(self.__session_id,
+            self.__username, self.__authservice, [self.__sensor1_svc, self.__sensor2_svc])
 
         self.__page.show_options()
-
 
     def login(self) -> Tuple[str, str]:
         """ Allows to enter the application.

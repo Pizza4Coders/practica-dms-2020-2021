@@ -2,11 +2,10 @@
 """
 from typing import List, Callable, Tuple
 from dms2021client.data.rest import AuthService
-from dms2021client.presentation.menus import OrderedMenu
+from dms2021client.presentation import OrderedMenu
 from dms2021client.data.rest.exc import NotFoundError, UnauthorizedError
-from dms2021client.presentation import PrincipleMenu
 
-class ModifyRights(OrderedMenu):
+class ModifyRightsMenu(OrderedMenu):
     """ options or revokes rights.
     """
 
@@ -29,7 +28,7 @@ class ModifyRights(OrderedMenu):
         """
         super().set_title("MODIFICAR PERMISOS")
         super().set_items(["Añadir permisos", "Eliminar permisos"])
-        super().set_opt_fuctions([self.option_rights, self.revoke_rights])
+        super().set_opt_fuctions([self.grant_rights, self.revoke_rights])
         try:
             super().show_options()
         except UnauthorizedError:
@@ -38,9 +37,8 @@ class ModifyRights(OrderedMenu):
             print("Error 404. Página no encontrada.")
         except Exception:
             print("Ha ocurrido un error inesperado.")
-        PrincipleMenu(self.__session_token, self.__username, self.__authservice).show_options()
 
-    def option_rights(self):
+    def grant_rights(self):
         """ Give rights to a user.
         """
         option: int = 1

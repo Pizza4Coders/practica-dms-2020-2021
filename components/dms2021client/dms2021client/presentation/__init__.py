@@ -1,6 +1,5 @@
 """ Presentation layer.
 """
-from .principlemenu import PrincipleMenu
-from .createuser import CreateUser
-from .logout import Logout
-from .modifyrights import ModifyRights
+from .mainmenu import MainMenu
+from .menu import Menu
+from .orderedmenu import OrderedMenu
