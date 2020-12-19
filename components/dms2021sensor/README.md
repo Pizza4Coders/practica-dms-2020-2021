@@ -23,7 +23,6 @@ The configuration file is a YAML dictionary with the following configurable para
 - `host` (mandatory): The service host.
 - `port` (mandatory): The service port.
 - `debug`: If set to true, the service will run in debug mode.
-- `salt`: A configurable string used to further randomize the password hashing. If changed, existing user passwords will be lost.
 - `auth_service`: A dictionary with the configuration needed to connect to the authentication service.
   - `host` and `port`: Host and port used to connect to the service.
 
