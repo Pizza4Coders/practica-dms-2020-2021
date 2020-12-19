@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
+""" Client configuration classes.
+"""
 
 from dms2021client.logic import ClientManager
-
-ClientManager()
