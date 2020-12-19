@@ -84,7 +84,7 @@ This service exposes a REST API so other services/applications can interact with
   - Parameters:
     - `username` [form data] (`str`): The requestor's user name.
   - Returns:
-    - `200 OK`. The response content (`application/json`) is a JSON dictionary containing a list of rules with the following data on each element:
+    - `200 OK`. The response content (`application/json`) is a JSON list of rules with the following data on each element:
       - `rule_name`: The name of the rule
       - `type`: Type of rule. This can be `command` if it runs a command or `file` if it checks for the presence of a file.
       - `data`: If `type` was `command`, the command that runs, or if it was `file`, the path to the file that is checked.
@@ -160,7 +160,7 @@ This service exposes a REST API so other services/applications can interact with
   - Parameters:
     - `username` [form data] (`str`): The requestor's user name.
   - Returns:
-    - `200 OK`. The response content is a dictionary containing a list with the following data on each element:
+    - `200 OK`. The response content is a JSON list with the following data on each element:
       - `rule_name`: The name of the rule.
       - `time`: The time of the result.
       - `result`: The result of the rule.
