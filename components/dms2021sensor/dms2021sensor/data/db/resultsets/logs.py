@@ -31,7 +31,7 @@ class Logs():
             - ValueError: If the rule_name, time or result is missing.
             - LogExistsError: If the Log already exists.
         """
-        if not rule_name or not time or not result:
+        if not rule_name:
             raise ValueError("A rule name, a time and a result is required.")
         try:
             if not Rules.rule_exists(session, rule_name):

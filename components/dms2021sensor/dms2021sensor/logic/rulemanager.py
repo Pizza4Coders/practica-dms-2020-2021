@@ -106,10 +106,12 @@ class RuleManager(ManagerBase):
         rule = self.get_rule(rule_name)
         if rule.type == "command":
             result = CommandRuleRunner.run_rule(rule)
+            print("Creando log comando", result)
             log_manager.create_log(rule_name, datetime.now(), result)
             return result
         if rule.type == "file":
-            result = FileRuleRunner.run_rule(rule)
+            result = str(FileRuleRunner.run_rule(rule))
+            print("Creando log archivo", result)
             log_manager.create_log(rule_name, datetime.now(), result)
             return result
         raise RuleNotExistsError

@@ -25,10 +25,6 @@ class LogManager(ManagerBase):
         """
         if not rule_name:
             raise ValueError("A rule name is required.")
-        if not time:
-            raise ValueError("A datetime is required.")
-        if not result:
-            raise ValueError("A result is required.")
         session = self.get_schema().new_session()
         Logs.create(session, rule_name, time, result)
 

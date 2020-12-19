@@ -29,9 +29,10 @@ class Rules():
             - ValueError: If some parameter is missing
             - RuleExistsError: If a rule with that name already exists.
         """
-        if not rule_name or not rule_type or not data or not frequency:
+        if not rule_name or not rule_type or not data:
             raise ValueError("A rule name, a type, an argument and a frequency is required.")
         try:
+            print("Paso por aquí con", rule_name)
             rule = Rule(rule_name, rule_type, data, frequency)
             session.add(rule)
             session.commit()

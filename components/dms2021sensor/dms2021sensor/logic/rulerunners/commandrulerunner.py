@@ -20,6 +20,7 @@ class CommandRuleRunner(BaseRuleRunner):
         """
         try:
             result = subprocess.run(rule.data, stdout=subprocess.PIPE, check=True, shell=True)
+            print(result.stdout.decode("utf-8"))
             return result.stdout.decode("utf-8")
         except subprocess.CalledProcessError as ex:
             raise RuleRunError from ex

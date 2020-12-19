@@ -36,7 +36,7 @@ class Rule(ResultBase):
             A Table object with the table definition.
         """
         return Table(
-            "logs",
+            "rules",
             metadata,
             Column("rule_name", String(32), primary_key=True),
             Column("type", String(32), nullable=False),
@@ -52,7 +52,7 @@ class Rule(ResultBase):
             A dictionary with the mapping properties.
         """
         return{
-            "logs": relationship(Log, backref=backref("rule", cascade="all, delete-orphan"))
+            "logs": relationship(Log, backref=backref("rule"))
         }
 
     def __str__(self) -> str:

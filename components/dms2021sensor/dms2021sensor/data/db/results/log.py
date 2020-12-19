@@ -2,7 +2,7 @@
 """
 
 from datetime import datetime
-from sqlalchemy import Table, MetaData, Column, String, DateTime # type: ignore
+from sqlalchemy import Table, MetaData, Column, String, DateTime, ForeignKey # type: ignore
 from .resultbase import ResultBase
 
 class Log(ResultBase):
@@ -35,7 +35,7 @@ class Log(ResultBase):
         return Table(
             "logs",
             metadata,
-            Column("rule_name", String(32), primary_key=True),
+            Column("rule_name", String(32), ForeignKey("rules.rule_name", ondelete="CASCADE"), primary_key=True),
             Column("time", DateTime, primary_key=True),
             Column("result", String(8192), nullable=False)
         )
