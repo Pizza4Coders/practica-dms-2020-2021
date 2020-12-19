@@ -1,6 +1,6 @@
 # DMS 2020-2021 Client application
 
-This applicationserves as the control console for the different services of the appliance.
+This application serves as the control console for the different services of the appliance.
 
 ## Installation
 
@@ -51,7 +51,10 @@ It's also possible to`go back` in every window. If the window is the main menu, 
 
 
 ## Model-view-controller
-
+We use MVC to split the code on these three parts:
+- **Model:** The part that is responsible of working with the data. This is inside the data folder. There, we have the part that stores the configuration and the communication with the authentication service and sensor service.
+- **View:** The part of the code that will interact with the client. This is inside the presentation folder.
+- **Controller:** The part of the code that manages the logic of the client with a manager class which allows the communication between the Model and the View.
 
 ## Design patterns
 
@@ -67,9 +70,9 @@ It's also possible to`go back` in every window. If the window is the main menu, 
   - logic/: Here we have the manager.
     - ClientManager: Gets the configuration data of the client and allows to log in. Also, calls some methods of MainMenu class of the presentation package.
   - presentation/:
-      - Menu: Abstract class (`Component`)
-      - OrderedMenu: Class that extends Menu (`Wrapper`)
-      This folders contains the classes which defines all the menus (`Concrete Wrapper`)
+      - Menu: Abstract class (`Component`).
+      - OrderedMenu: Class that extends Menu (`Wrapper`).
+    This folders contains the classes which defines all the menus (`Concrete Wrapper`)
       - MainMenu: Shows the main menu (the options will be different depends on the rights a user has).
       - sensor_menus/:
           - RulesMenu: Shows a menu (depends on the rights) for modifying rules or viewing reports.
