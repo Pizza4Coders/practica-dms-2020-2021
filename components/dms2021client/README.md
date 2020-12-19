@@ -45,7 +45,39 @@ Just run `dms2021client` as any other program.
 
 It's also possible to`go back` in every window. If the window is the main menu, the application ends.
 
-## Architecture
+# Client architecture
+
+## SOLID Principles
+
+
+## Model-view-controller
+
+
+## Design patterns
+
+## Code structure
+- bin/: Here we have the starting point of our program.
+- dms2021client/: The main package.
+  - data/
+    - config/: Gets the neccessary information to make contact with the authentication and sensor service.
+    - rest/: Here we have the communication with the auth service and the sensor service.
+        - exc/: Exceptions used in the two next classes. We have this exceptions: BadRequestError, ConflictError, InvalidCredentialsError, NotFoundError, UnauthorizedError)
+        - AuthService: Communication with the authentication service.
+        - SensorsService: Communication with the sensor service.
+  - logic/: Here we have the manager.
+    - ClientManager: Gets the configuration data of the client and allows to log in. Also, calls some methods of MainMenu class of the presentation package.
+  - presentation/:
+      - Menu: Abstract class (`Component`)
+      - OrderedMenu: Class that extends Menu (`Wrapper`)
+      This folders contains the classes which defines all the menus (`Concrete Wrapper`)
+      - MainMenu: Shows the main menu (the options will be different depends on the rights a user has).
+      - sensor_menus/:
+          - RulesMenu: Shows a menu (depends on the rights) for modifying rules or viewing reports.
+          - SensorsMenu: Shows a menu for choosing a sensor.
+      - user_menus/:
+          - CreateUser: Shows a window for creating a user.
+          - ModifyRights: Shows a menu for adding or deleting rights to a user.
+    
 
 
 
