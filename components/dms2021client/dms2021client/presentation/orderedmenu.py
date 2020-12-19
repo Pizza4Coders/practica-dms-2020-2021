@@ -1,8 +1,8 @@
 """OrderedMenu class module.
 """
 
-from typing import List, Callable
-from dms2021client.presentation.menus import Menu
+from typing import List, Callable, Union
+from dms2021client.presentation import Menu
 
 class OrderedMenu(Menu):
     """Class Ordered Menu
@@ -48,16 +48,20 @@ class OrderedMenu(Menu):
             print(str(i) + ". " + item)
         print("-"*(40+len(self._ordered_title)))
 
-    def show_options(self):
+    def show_options(self) -> None:
         """ Display the menu and controls the actions to be executed when one option
         have been selected.
         """
-        selected_opt: int = 0
-        while 0 > selected_opt > len(self._ordered_opt_functions):
+        selected_opt: Union[str, int] = 0
+        while True:
             try:
                 self._draw_title()
                 self._draw_items()
-                selected_opt = int(input("Selecciona una opción: "))
+                print("Si desea volver atrás introduzca \"Salir\"")
+                selected_opt = input("Selecciona una opción: ")
+                if selected_opt.lower() in ("salir", "atrás", "exit", "back", "q"):
+                    return
+                selected_opt = int(selected_opt)
             except ValueError:
                 pass
-        self._ordered_opt_functions[selected_opt - 1]()
+            self._ordered_opt_functions[int(selected_opt) - 1]()

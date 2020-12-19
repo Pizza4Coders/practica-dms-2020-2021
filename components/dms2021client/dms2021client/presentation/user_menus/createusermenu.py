@@ -2,10 +2,9 @@
 """
 from dms2021client.data.rest import AuthService
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, UnauthorizedError
-from dms2021client.presentation.menus import OrderedMenu
-from dms2021client.presentation import PrincipleMenu
+from dms2021client.presentation import OrderedMenu
 
-class CreateUser(OrderedMenu):
+class CreateUserMenu(OrderedMenu):
     """ Allows the creation of a user.
     """
 
@@ -39,4 +38,3 @@ class CreateUser(OrderedMenu):
             print("El usuario ya existe.")
         except Exception:
             print("Ha ocurrido un error inesperado.")
-        PrincipleMenu(self.__session_token, self.__username, self.__authservice).show_options()

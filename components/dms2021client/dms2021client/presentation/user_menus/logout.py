@@ -2,7 +2,7 @@
 """
 from dms2021client.data.rest import AuthService
 from dms2021client.data.rest.exc import UnauthorizedError
-from dms2021client.presentation.menus import OrderedMenu
+from dms2021client.presentation import OrderedMenu
 
 class Logout(OrderedMenu):
     """ Log out.
