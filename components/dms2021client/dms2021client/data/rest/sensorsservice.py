@@ -2,8 +2,8 @@
 """
 
 import json
+from typing import List
 from urllib.parse import urlencode
-from typing import List, Callable
 from http.client import HTTPConnection, HTTPResponse, HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
 from dms2021client.data.rest.exc import UnauthorizedError
