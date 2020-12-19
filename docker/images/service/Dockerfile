@@ -3,7 +3,8 @@ FROM ubuntu:latest
 RUN /bin/bash -c "\
     apt update && \
     apt install -y python3 python3-pip sysstat && \
-    apt clean \
+    apt clean && \
+    pip3 install requests \
 "
 
 ADD bootstrap.sh /tmp/scripts/

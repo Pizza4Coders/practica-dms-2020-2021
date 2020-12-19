@@ -1,0 +1,1 @@
+docker-compose -f docker/config/dev.yml rm -sfv
