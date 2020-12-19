@@ -18,9 +18,8 @@ class CommandRuleRunner(BaseRuleRunner):
         Returns:
             The result of the rule as a string.
         """
-        command = rule.data.split()
         try:
-            result = subprocess.run(command, stdout=subprocess.PIPE, check=True)
+            result = subprocess.run(rule.data, stdout=subprocess.PIPE, check=True, shell=True)
             return result.stdout.decode("utf-8")
         except subprocess.CalledProcessError as ex:
             raise RuleRunError from ex

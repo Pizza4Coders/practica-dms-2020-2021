@@ -107,6 +107,11 @@ def handle_exception(e):
     return ('', 500)
 
 if __name__ == '__main__':
+    rule_manager.create_rule("Archivo file.txt", "file", "/tmp/sensor-volume/file.txt", 30)
+    rule_manager.create_rule("Estado memoria", "command", "free -m", 30)
+    rule_manager.create_rule("Uso CPU", "command",
+        "mpstat | grep -A 5 \"%idle\" | tail -n 1 | awk -F " " '{print 100 -  $ 12}'a", 30)
+
     background_thread = RunnerThread()
     background_thread.set_up(rule_manager, log_manager)
     background_thread.start()
