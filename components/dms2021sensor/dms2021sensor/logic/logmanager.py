@@ -14,7 +14,15 @@ class LogManager(ManagerBase):
     def create_log(self, rule_name: str, time: datetime, result: str) -> None:
         """ Creates a new log
         ---
-        """ #TODO Document this later
+        Parameters:
+            - rule_name: The rule name
+            - time: A datetime.
+            - result: A string with the result.
+        Throws:
+            - ValueError if any of the parameters is missing.
+            - RuleNotExistsError if the rule does not exist.
+            - LogExistsError if a log already exists.
+        """
         if not rule_name:
             raise ValueError("A rule name is required.")
         if not time:
@@ -27,7 +35,15 @@ class LogManager(ManagerBase):
     def get_last_run(self, rule_name: str) -> Log:
         """ Gets the last log for a rule.
         ---
-        """ #TODO Document this later
+        Parameters:
+            - rule_name: The rule name.
+        Returns:
+            A Log object with the last rule run.
+        Throws:
+            - ValueError if the rule name is missing.
+            - RuleNotExistsError if the rule does not exist.
+            - LogNotExistsError if there is no log record for that rule.
+        """
         if not rule_name:
             raise ValueError("A rule name is required.")
         session = self.get_schema().new_session()
@@ -36,6 +52,8 @@ class LogManager(ManagerBase):
     def get_all_runs(self) -> List[Log]:
         """ Gets all the logs.
         ---
-        """ #TODO Document this later
+        Returns:
+            A list with all of the logs that exists on the system.
+        """
         session = self.get_schema().new_session()
         return Logs.get_all_runs(session)
