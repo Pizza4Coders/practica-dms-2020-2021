@@ -3,6 +3,7 @@
 
 import json
 from urllib.parse import urlencode
+from typing import List, Callable
 from http.client import HTTPConnection, HTTPResponse, HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
 from dms2021client.data.rest.exc import UnauthorizedError
@@ -75,7 +76,7 @@ class SensorsService():
             raise UnauthorizedError()
         if response.status == 500:
             raise HTTPException('Server error')
-        return {}
+        return []
 
     def get_rule(self, rulename: str, user: str) -> dict:
         """ Gets the specified rule.
@@ -174,7 +175,7 @@ class SensorsService():
         if response.status == 500:
             raise HTTPException('Server error')
 
-    def run_rule(self, rulename: str, user: str) -> List[dict]:
+    def run_rule(self, rulename: str, user: str) -> dict:
         """ Runs a specified rule.
         ---
         Parameters:
@@ -207,7 +208,7 @@ class SensorsService():
             raise HTTPException('Server error')
         return {}
 
-    def get_log(self, user: str) -> dict:
+    def get_log(self, user: str) -> List[dict]:
         """ Gets the log.
         ---
         Parameters:
@@ -232,4 +233,4 @@ class SensorsService():
             raise UnauthorizedError()
         if response.status == 500:
             raise HTTPException('Server error')
-        return {}
+        return []
