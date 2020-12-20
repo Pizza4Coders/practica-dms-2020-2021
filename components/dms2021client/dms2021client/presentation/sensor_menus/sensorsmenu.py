@@ -38,7 +38,7 @@ class SensorsMenu(OrderedMenu):
         for i, sensorservice in enumerate(self.__sensorservices, 1):
             options.append("Sensor " + str(i))
             functions.append(RulesMenu(self.__session_token, self.__username,
-                self.__authservice, sensorservice).show_options())
+                self.__authservice, sensorservice).show_options)
         self.set_items(options)
         self.set_opt_fuctions(functions)
         try:

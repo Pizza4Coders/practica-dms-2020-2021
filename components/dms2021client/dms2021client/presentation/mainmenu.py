@@ -38,19 +38,19 @@ class MainMenu(OrderedMenu):
         super().set_title("MENÚ PRINCIPAL")
         if self.__authservice.has_right(self.__username, "AdminUsers"):
             options.append("Crear usuarios")
-            functions.append(self.create_users())
+            functions.append(self.create_users)
 
         if self.__authservice.has_right(self.__username, "AdminRights"):
             options.append("Modificar permisos de usuarios")
             functions.append(ModifyRightsMenu(self.__session_token,
-                self.__authservice).show_options())
+                self.__authservice).show_options)
 
         if (self.__authservice.has_right(self.__username, "AdminSensors") or
         self.__authservice.has_right(self.__username, "AdminRules") or
         self.__authservice.has_right(self.__username, "ViewReports")):
             options.append("Gestionar sensores")
             functions.append(SensorsMenu(self.__session_token, self.__username,
-                self.__authservice, self.__sensorsservices).show_options())
+                self.__authservice, self.__sensorsservices).show_options)
 
         super().set_items(options)
         super().set_opt_fuctions(functions)
