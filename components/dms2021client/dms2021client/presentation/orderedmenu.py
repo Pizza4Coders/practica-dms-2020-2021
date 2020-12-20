@@ -65,7 +65,7 @@ class OrderedMenu(Menu):
                     return
                 selected_opt_num = int(selected_opt)
             except ValueError:
-                pass
+                continue
             if selected_opt_num <= 0 or selected_opt_num > len(self._ordered_items):
                 print("Esa opción no es correcta.")
                 continue
