@@ -1,5 +1,6 @@
 """ Modifyrights class module.
 """
+from http.client import HTTPException
 from typing import List, Callable, Tuple
 from dms2021client.data.rest import AuthService
 from dms2021client.presentation.orderedmenu import OrderedMenu
@@ -9,7 +10,7 @@ class ModifyRightsMenu(OrderedMenu):
     """ options or revokes rights.
     """
 
-    def __init__(self, session_token: str, username: str, authservice: AuthService):
+    def __init__(self, session_token: str, auth_service: AuthService):
         """ Constructor method.
 
         Initializes the variables.
@@ -20,11 +21,10 @@ class ModifyRightsMenu(OrderedMenu):
             - authservice: REST cliente to connect to the authentication service authservice.
         """
         self.__session_token: str = session_token
-        self.__username: str = username
-        self.__authservice: AuthService = authservice
+        self.__authservice: AuthService = auth_service
 
     def show_options(self):
-        """ Shows options to option or revoke rights.
+        """ Shows options to grant or revoke rights.
         """
         super().set_title("MODIFICAR PERMISOS")
         super().set_items(["Añadir permisos", "Eliminar permisos"])
@@ -35,7 +35,7 @@ class ModifyRightsMenu(OrderedMenu):
             print("Usted no tiene permiso para cambiar permisos.")
         except NotFoundError:
             print("Error 404. Página no encontrada.")
-        except Exception:
+        except HTTPException:
             print("Ha ocurrido un error inesperado.")
 
     def grant_rights(self):

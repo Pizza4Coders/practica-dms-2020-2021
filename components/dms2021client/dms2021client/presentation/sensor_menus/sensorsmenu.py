@@ -29,12 +29,14 @@ class SensorsMenu(OrderedMenu):
         self.__sensorservices: List[SensorsService] = sensorsservices
 
     def show_options(self):
+        """ Shows options to choose a sensor.
+        """
         options: List[str] = []
         functions: List[Callable]
 
         self.set_title("MENÚ SENSORES")
         for i, sensorservice in enumerate(self.__sensorservices, 1):
-            options.append("Sensor " + i)
+            options.append("Sensor " + str(i))
             functions.append(RulesMenu(self.__session_token, self.__username,
                 self.__authservice, sensorservice).show_options())
         self.set_items(options)

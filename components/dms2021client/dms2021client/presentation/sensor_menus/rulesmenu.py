@@ -29,7 +29,10 @@ class RulesMenu(OrderedMenu):
         self.__authservice: AuthService = authservice
         self.__sensorservice: SensorsService = sensorservice
 
-    def show_options(self) -> None:
+    def show_options(self):
+        """ Shows options to modify rules or view reports, depends on the rights
+        the user has.
+        """
         options: List[str] = []
         functions: List[Callable]
 
