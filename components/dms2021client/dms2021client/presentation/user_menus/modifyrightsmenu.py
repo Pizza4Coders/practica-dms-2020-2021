@@ -18,7 +18,6 @@ class ModifyRightsMenu(OrderedMenu):
         ---
         Parameters:
             - session_token: The session_token of the user string.
-            - username: The username string.
             - authservice: REST cliente to connect to the authentication service authservice.
         """
         self.__session_token: str = session_token
@@ -37,7 +36,7 @@ class ModifyRightsMenu(OrderedMenu):
                 print("Usted no tiene permiso para cambiar permisos.")
                 self._returning = True
             except NotFoundError:
-                print("Error 404. Página no encontrada.")
+                print("No se pueden modificar permisos de un usuario inexistente.")
                 self._returning = True
             except HTTPException:
                 print("Ha ocurrido un error inesperado.")
@@ -46,14 +45,12 @@ class ModifyRightsMenu(OrderedMenu):
     def grant_rights(self):
         """ Give rights to a user.
         """
-        option: int = 1
-        self.modify_rights(option)
+        self.modify_rights(1)
 
     def revoke_rights(self):
         """ Revokes rights to a user.
         """
-        option: int = 2
-        self.modify_rights(option)
+        self.modify_rights(2)
 
     def modify_rights(self, option):
         """ Modify rights to a user.
