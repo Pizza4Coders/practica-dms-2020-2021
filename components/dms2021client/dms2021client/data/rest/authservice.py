@@ -220,7 +220,7 @@ class AuthService():
         if response.status == 200:
             return True
         if response.status == 404:
-            raise NotFoundError()
+            return False
         if response.status == 500:
             raise HTTPException('Server error')
         return False

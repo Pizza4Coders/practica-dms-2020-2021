@@ -1,5 +1,6 @@
 """ Modifyrights class module.
 """
+from functools import partial
 from http.client import HTTPException
 from typing import List, Callable, Tuple
 from dms2021client.data.rest import AuthService
@@ -87,9 +88,11 @@ class ModifyRightsMenu(OrderedMenu):
         for i in rights:
             if self.__authservice.has_right(username, i) and option == 2:
                 right_result.append(i)
-                functions.append(self.__authservice.revoke(username, i, self.__session_token))
+                fun = partial(self.__authservice.revoke, username, i, self.__session_token)
+                functions.append(fun)
             else:
                 right_result.append(i)
-                functions.append(self.__authservice.grant(username, i, self.__session_token))
+                fun = partial(self.__authservice.grant, username, i, self.__session_token)
+                functions.append(fun)
 
         return right_result, functions
