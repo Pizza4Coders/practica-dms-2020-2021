@@ -33,33 +33,34 @@ class RulesMenu(OrderedMenu):
         """ Shows options to modify rules or view reports, depends on the rights
         the user has.
         """
-        options: List[str] = []
-        functions: List[Callable] = []
+        while not self._returning:
+            options: List[str] = []
+            functions: List[Callable] = []
 
-        self.set_title("MENÚ REGLAS")
-        if self.__authservice.has_right(self.__username, "AdminRules"):
-            options += ["Ver reglas", "Añadir regla", "Eliminar regla"]
-            functions += [self.get_rules, self.add_rules, self.remove_rules]
+            self.set_title("MENÚ REGLAS")
+            if self.__authservice.has_right(self.__username, "AdminRules"):
+                options += ["Ver reglas", "Añadir regla", "Eliminar regla"]
+                functions += [self.get_rules, self.add_rules, self.remove_rules]
+                if self.__authservice.has_right(self.__username, "ViewReports"):
+                    options.append("Ejecutar regla")
+                    functions.append(self.run_rule)
             if self.__authservice.has_right(self.__username, "ViewReports"):
-                options.append("Ejecutar regla")
-                functions.append(self.run_rule)
-        if self.__authservice.has_right(self.__username, "ViewReports"):
-            options.append("Ver historial de ejecución")
-            functions.append(self.get_log)
-        super().set_items(options)
-        super().set_opt_fuctions(functions)
-        try:
-            super().show_options()
-        except BadRequestError:
-            print("Se han introducido parámetros incorrectos.")
-        except UnauthorizedError:
-            print("Usted no tiene permisos para realizar esta acción.")
-        except NotFoundError:
-            print("No existe una regla con ese nombre.")
-        except ConflictError:
-            print("Ya existe una regla con ese nombre.")
-        except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+                options.append("Ver historial de ejecución")
+                functions.append(self.get_log)
+            super().set_items(options)
+            super().set_opt_fuctions(functions)
+            try:
+                super().show_options()
+            except BadRequestError:
+                print("Se han introducido parámetros incorrectos.")
+            except UnauthorizedError:
+                print("Usted no tiene permisos para realizar esta acción.")
+            except NotFoundError:
+                print("No existe una regla con ese nombre.")
+            except ConflictError:
+                print("Ya existe una regla con ese nombre.")
+            except HTTPException:
+                print("Ha ocurrido un error inesperado.")
 
     def get_rules(self) -> None:
         """ Gets the list of rules.
@@ -67,8 +68,8 @@ class RulesMenu(OrderedMenu):
         print("-"*20 + "VER REGLAS" + "-"*20 + "\n")
         result: List[dict] = self.__sensorservice.get_all_rules(self.__username)
         for rule in result:
-            for k, val in rule:
-                print("[" + k.upper() + "] -> " + str(val))
+            for k in rule:
+                print("[" + k.upper() + "] -> " + str(rule[k]))
             print("-"*50)
 
     def add_rules(self) -> None:
@@ -76,8 +77,11 @@ class RulesMenu(OrderedMenu):
         """
         print("-"*20 + "AÑADIR REGLA" + "-"*20 + "\n")
         rulename: str = input("Introduzca el nombre de la regla: ")
-        ruletype: str = input("Introduzca el tipo de la regla (tipos de regla): ")
-        ruleargs: str = input("Introduzca los argumentos de la regla (ejemplo): ")
+        while True:
+            ruletype: str = input("Introduzca el tipo de la regla (file/command): ")
+            if ruletype in ["file", "command"]:
+                break
+        ruleargs: str = input("Introduzca los argumentos de la regla (ruta al archivo o comando de Linux): ")
         frequency: int
         while True:
             try:
@@ -104,8 +108,7 @@ class RulesMenu(OrderedMenu):
         rulename: str = input("Introduzca el nombre de la regla: ")
         result: dict = self.__sensorservice.run_rule(rulename, self.__username)
         print("Resultado de la ejecución: ")
-        for k, val in result:
-            print("[" + k.upper() + "] -> " + str(val))
+        print(result["result"])
 
     def get_log(self) -> None:
         """ Gets the log.
@@ -113,6 +116,6 @@ class RulesMenu(OrderedMenu):
         print("-"*20 + "VER HISTORIAL DE EJECUCIÓN" + "-"*20 + "\n")
         result: List[dict] = self.__sensorservice.get_log(self.__username)
         for rule in result:
-            for k, val in rule:
-                print("[" + k.upper() + "] -> " + str(val))
+            for k in rule:
+                print("[" + k.upper() + "] -> " + str(rule[k]))
             print("-"*66)

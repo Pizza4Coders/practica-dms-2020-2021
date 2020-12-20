@@ -31,17 +31,19 @@ class SensorsMenu(OrderedMenu):
     def show_options(self):
         """ Shows options to choose a sensor.
         """
-        options: List[str] = []
-        functions: List[Callable] = []
+        while not self._returning:
+            options: List[str] = []
+            functions: List[Callable] = []
 
-        self.set_title("MENÚ SENSORES")
-        for i, sensorservice in enumerate(self.__sensorservices, 1):
-            options.append("Sensor " + str(i))
-            functions.append(RulesMenu(self.__session_token, self.__username,
-                self.__authservice, sensorservice).show_options)
-        self.set_items(options)
-        self.set_opt_fuctions(functions)
-        try:
-            super().show_options()
-        except UnauthorizedError:
-            print("Usted no tiene permisos sobre este sensor.")
+            self.set_title("MENÚ SENSORES")
+            for i, sensorservice in enumerate(self.__sensorservices, 1):
+                options.append("Sensor " + str(i))
+                functions.append(RulesMenu(self.__session_token, self.__username,
+                    self.__authservice, sensorservice).show_options)
+            self.set_items(options)
+            self.set_opt_fuctions(functions)
+            try:
+                super().show_options()
+            except UnauthorizedError:
+                print("Usted no tiene permisos sobre este sensor.")
+                self._returning = True

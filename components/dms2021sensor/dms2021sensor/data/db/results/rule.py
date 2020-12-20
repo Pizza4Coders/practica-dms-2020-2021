@@ -2,6 +2,7 @@
 """
 
 from typing import Dict
+import json
 from sqlalchemy import Table, MetaData, Column, String, Integer # type: ignore
 from sqlalchemy.orm import relationship, backref # type: ignore
 from dms2021sensor.data.db.results.log import Log
@@ -61,7 +62,7 @@ class Rule(ResultBase):
         Returns:
             The object formatted as a json-formatted string.
         """
-        return str({
+        return json.dumps({
             "rule_name": self.rule_name,
             "type": self.type,
             "data": self.data,

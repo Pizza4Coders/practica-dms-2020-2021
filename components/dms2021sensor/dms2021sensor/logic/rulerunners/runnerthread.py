@@ -20,7 +20,7 @@ class RunnerThread(Thread):
         self.rule_manager.create_rule("Archivo file.txt", "file", "/tmp/sensor-volume/file.txt", 30)
         self.rule_manager.create_rule("Estado memoria", "command", "free -m", 30)
         self.rule_manager.create_rule("Uso CPU", "command",
-        "mpstat | grep -A 5 \"%idle\" | tail -n 1 | awk -F " " '{print 100 -  $ 12}'a", 30)
+        "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage \"%\"}'", 30)
         self.rule_manager.create_rule("Info kernel", "command", "uname -a", 0)
         self.last_runs: Dict[str, datetime] = {}
 
@@ -34,7 +34,7 @@ class RunnerThread(Thread):
                     self.last_runs[rule.rule_name] = datetime.now()
                     self.rule_manager.run_rule(rule.rule_name, self.log_manager)
                 else:
-                    difference = self.last_runs[rule.rule_name] - datetime.now()
+                    difference = datetime.now() - self.last_runs[rule.rule_name]
                     if difference.total_seconds() > rule.frequency:
                         self.last_runs[rule.rule_name] = datetime.now()
                         self.rule_manager.run_rule(rule.rule_name, self.log_manager)

@@ -2,6 +2,7 @@
 """
 
 from datetime import datetime
+import json
 from sqlalchemy import Table, MetaData, Column, String, DateTime, ForeignKey # type: ignore
 from .resultbase import ResultBase
 
@@ -46,7 +47,7 @@ class Log(ResultBase):
         Returns:
             The object formatted as a json-formatted string.
         """
-        return str({
+        return json.dumps({
             "rule_name": self.rule_name,
             "time": self.time.strftime("%d %b %Y %H:%M:%S"),
             "result": self.result

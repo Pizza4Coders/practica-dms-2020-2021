@@ -3,7 +3,7 @@
 
 import json
 from typing import List
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 from http.client import HTTPConnection, HTTPResponse, HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
 from dms2021client.data.rest.exc import UnauthorizedError
@@ -71,7 +71,11 @@ class SensorsService():
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
-            return json.loads(response_data_json)
+            lista = json.loads(response_data_json)
+            retorno: List[dict] = []
+            for rule in lista:
+                retorno.append(json.loads(rule))
+            return retorno
         if response.status == 401:
             raise UnauthorizedError()
         if response.status == 500:
@@ -97,7 +101,7 @@ class SensorsService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/rule/'+str(rulename), form, headers)
+        connection.request('GET', '/rule/'+quote(str(rulename)), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
@@ -127,8 +131,8 @@ class SensorsService():
             - ConflictError: If the rule already exists.
             - HTTPException: On an unhandled 500 error.
         """
-        form: str = urlencode({'rulename': rulename, 'ruletype': ruletype,
-        'ruleargs': ruleargs, 'frequency': frequency, 'username': user})
+        form: str = urlencode({'rule_name': rulename, 'type': ruletype,
+        'data': ruleargs, 'frequency': frequency, 'username': user})
         headers: dict = {
             'Content-type': 'application/x-www-form-urlencoded'
         }
@@ -162,7 +166,7 @@ class SensorsService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('DELETE', '/rule/'+str(rulename), form, headers)
+        connection.request('DELETE', '/rule/'+quote(str(rulename)), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             return
@@ -193,7 +197,7 @@ class SensorsService():
             'Content-type': 'application/x-www-form-urlencoded'
         }
         connection: HTTPConnection = self.__get_connection()
-        connection.request('GET', '/rule/' + str(rulename) + '/run/', form, headers)
+        connection.request('GET', '/rule/' + quote(str(rulename)) + '/run/', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
@@ -228,7 +232,11 @@ class SensorsService():
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
             response_data_json = response.read()
-            return json.loads(response_data_json)
+            lista = json.loads(response_data_json)
+            retorno: List[dict] = []
+            for rule in lista:
+                retorno.append(json.loads(rule))
+            return retorno
         if response.status == 401:
             raise UnauthorizedError()
         if response.status == 500:

@@ -52,7 +52,7 @@ def get_rule(rulename: str):
     return (response.get_content(), response.get_code(), {"Content-type": response.get_mime_type()})
 
 @app.route("/rule/", methods=["POST"])
-def create_rule(rulename: str):
+def create_rule():
     try:
         user: str = request.form['username']
     except KeyError:

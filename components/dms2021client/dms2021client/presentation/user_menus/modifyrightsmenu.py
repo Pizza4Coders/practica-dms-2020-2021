@@ -27,17 +27,21 @@ class ModifyRightsMenu(OrderedMenu):
     def show_options(self):
         """ Shows options to grant or revoke rights.
         """
-        super().set_title("MODIFICAR PERMISOS")
-        super().set_items(["Añadir permisos", "Eliminar permisos"])
-        super().set_opt_fuctions([self.grant_rights, self.revoke_rights])
-        try:
-            super().show_options()
-        except UnauthorizedError:
-            print("Usted no tiene permiso para cambiar permisos.")
-        except NotFoundError:
-            print("Error 404. Página no encontrada.")
-        except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+        while not self._returning:
+            super().set_title("MODIFICAR PERMISOS")
+            super().set_items(["Añadir permisos", "Eliminar permisos"])
+            super().set_opt_fuctions([self.grant_rights, self.revoke_rights])
+            try:
+                super().show_options()
+            except UnauthorizedError:
+                print("Usted no tiene permiso para cambiar permisos.")
+                self._returning = True
+            except NotFoundError:
+                print("Error 404. Página no encontrada.")
+                self._returning = True
+            except HTTPException:
+                print("Ha ocurrido un error inesperado.")
+                self._returning = True
 
     def grant_rights(self):
         """ Give rights to a user.
@@ -58,17 +62,20 @@ class ModifyRightsMenu(OrderedMenu):
             - option: 1, grant, 2, revoke int.
         """
         username: str = input("Dime el nombre del usuario: ")
-        rights, functions = self.get_rights(username, option)
-        if not rights:
-            if option == 1:
-                print("El usuario ya tiene todos los permisos.")
+        self._returning = False
+        while not self._returning:
+            rights, functions = self.get_rights(username, option)
+            if not rights:
+                if option == 1:
+                    print("El usuario ya tiene todos los permisos.")
+                    return
+                print("El usuario no tiene ningún permiso.")
                 return
-            print("El usuario no tiene ningún permiso.")
-            return
-        super().set_title("PERMISOS")
-        super().set_items(rights)
-        super().set_opt_fuctions(functions)
-        super().show_options()
+            super().set_title("PERMISOS")
+            super().set_items(rights)
+            super().set_opt_fuctions(functions)
+            super().show_options()
+        self._returning = False
 
     def get_rights(self, username: str, option: int) -> Tuple[List[str], List[Callable]]:
         """ Gets rights of a user (what he has or not depends on the option)
@@ -90,7 +97,7 @@ class ModifyRightsMenu(OrderedMenu):
                 right_result.append(i)
                 fun = partial(self.__authservice.revoke, username, i, self.__session_token)
                 functions.append(fun)
-            else:
+            elif not self.__authservice.has_right(username, i) and option == 1:
                 right_result.append(i)
                 fun = partial(self.__authservice.grant, username, i, self.__session_token)
                 functions.append(fun)

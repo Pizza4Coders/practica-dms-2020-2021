@@ -11,6 +11,7 @@ class OrderedMenu(Menu):
     _ordered_title: str = ""
     _ordered_items: List[str] = []
     _ordered_opt_functions: List[Callable] = []
+    _returning: bool = False
 
     def set_title(self, title: str) -> None:
         """ Sets the menu title.
@@ -60,8 +61,13 @@ class OrderedMenu(Menu):
                 print("Si desea volver atrás introduzca \"Salir\"")
                 selected_opt = input("Selecciona una opción: ")
                 if selected_opt.lower() in ("salir", "atrás", "exit", "back", "q"):
+                    self._returning = True
                     return
                 selected_opt = int(selected_opt)
             except ValueError:
                 pass
+            if selected_opt <= 0 or selected_opt > len(self._ordered_items):
+                print("Esa opción no es correcta.")
+                continue
             self._ordered_opt_functions[int(selected_opt) - 1]()
+            return
