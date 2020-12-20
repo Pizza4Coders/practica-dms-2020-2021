@@ -34,7 +34,7 @@ class RulesMenu(OrderedMenu):
         the user has.
         """
         options: List[str] = []
-        functions: List[Callable]
+        functions: List[Callable] = []
 
         self.set_title("MENÚ REGLAS")
         if self.__authservice.has_right(self.__username, "AdminRules"):

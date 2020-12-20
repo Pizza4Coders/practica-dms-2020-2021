@@ -33,7 +33,7 @@ class MainMenu(OrderedMenu):
         """ Shows the options of the menu depends on the rights the user has.
         """
         options: List[str] = []
-        functions: List[Callable]
+        functions: List[Callable] = []
 
         super().set_title("MENÚ PRINCIPAL")
         if self.__authservice.has_right(self.__username, "AdminUsers"):

@@ -32,7 +32,7 @@ class SensorsMenu(OrderedMenu):
         """ Shows options to choose a sensor.
         """
         options: List[str] = []
-        functions: List[Callable]
+        functions: List[Callable] = []
 
         self.set_title("MENÚ SENSORES")
         for i, sensorservice in enumerate(self.__sensorservices, 1):
