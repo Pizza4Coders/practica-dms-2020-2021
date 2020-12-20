@@ -4,8 +4,8 @@
 from typing import List, Callable
 from dms2021client.data.rest.exc import UnauthorizedError
 from dms2021client.data.rest import AuthService, SensorsService
-from dms2021client.presentation import OrderedMenu
-from dms2021client.presentation.sensor_menus import RulesMenu
+from dms2021client.presentation.orderedmenu import OrderedMenu
+from dms2021client.presentation.sensor_menus.rulesmenu import RulesMenu
 
 class SensorsMenu(OrderedMenu):
     """ Grants or revokes rights.

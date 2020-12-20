@@ -2,7 +2,7 @@
 """
 from typing import List, Callable, Tuple
 from dms2021client.data.rest import AuthService
-from dms2021client.presentation import OrderedMenu
+from dms2021client.presentation.orderedmenu import OrderedMenu
 from dms2021client.data.rest.exc import NotFoundError, UnauthorizedError
 
 class ModifyRightsMenu(OrderedMenu):

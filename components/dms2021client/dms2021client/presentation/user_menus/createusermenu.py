@@ -2,7 +2,7 @@
 """
 from dms2021client.data.rest import AuthService
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, UnauthorizedError
-from dms2021client.presentation import OrderedMenu
+from dms2021client.presentation.orderedmenu import OrderedMenu
 
 class CreateUserMenu(OrderedMenu):
     """ Allows the creation of a user.

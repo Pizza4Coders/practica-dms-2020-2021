@@ -2,9 +2,10 @@
 """
 from typing import List, Callable
 from dms2021client.data.rest import AuthService, SensorsService
-from dms2021client.presentation.user_menus import CreateUserMenu, ModifyRightsMenu
+from dms2021client.presentation.user_menus.modifyrightsmenu import ModifyRightsMenu
+from dms2021client.presentation.user_menus.createusermenu import CreateUserMenu
 from dms2021client.presentation.sensor_menus import SensorsMenu
-from dms2021client.presentation import OrderedMenu
+from dms2021client.presentation.orderedmenu import OrderedMenu
 
 class MainMenu(OrderedMenu):
     """ Shows a menu with many options.

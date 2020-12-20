@@ -2,7 +2,7 @@
 """
 
 from typing import List, Callable, Union
-from dms2021client.presentation import Menu
+from dms2021client.presentation.menu import Menu
 
 class OrderedMenu(Menu):
     """Class Ordered Menu

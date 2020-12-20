@@ -6,7 +6,7 @@ from http.client import HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
 from dms2021client.data.rest.exc import UnauthorizedError
 from dms2021client.data.rest import AuthService, SensorsService
-from dms2021client.presentation import OrderedMenu
+from dms2021client.presentation.orderedmenu import OrderedMenu
 
 class RulesMenu(OrderedMenu):
     """ Add, Remove, Show or Execute Rules
