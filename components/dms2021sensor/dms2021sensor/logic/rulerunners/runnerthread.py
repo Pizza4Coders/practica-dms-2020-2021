@@ -2,7 +2,7 @@
 """
 
 from threading import Thread
-from typing import List
+from typing import List, Dict
 from datetime import datetime
 import time
 from dms2021sensor.logic import RuleManager, LogManager
@@ -22,7 +22,7 @@ class RunnerThread(Thread):
         self.rule_manager.create_rule("Uso CPU", "command",
         "mpstat | grep -A 5 \"%idle\" | tail -n 1 | awk -F " " '{print 100 -  $ 12}'a", 30)
         self.rule_manager.create_rule("Info kernel", "command", "uname -a", 0)
-        self.last_runs = {}
+        self.last_runs: Dict[str, datetime] = {}
 
     def run(self):
         """ Runs the thread
