@@ -4,7 +4,7 @@ RUN /bin/bash -c "\
     apt update && \
     apt install -y python3 python3-pip sysstat && \
     apt clean && \
-    pip3 install requests \
+    pip3 install APScheduler \
 "
 
 ADD bootstrap.sh /tmp/scripts/

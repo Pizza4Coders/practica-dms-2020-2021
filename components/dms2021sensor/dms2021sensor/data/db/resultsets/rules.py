@@ -32,7 +32,6 @@ class Rules():
         if not rule_name or not rule_type or not data:
             raise ValueError("A rule name, a type, an argument and a frequency is required.")
         try:
-            print("Paso por aquí con", rule_name)
             rule = Rule(rule_name, rule_type, data, frequency)
             session.add(rule)
             session.commit()

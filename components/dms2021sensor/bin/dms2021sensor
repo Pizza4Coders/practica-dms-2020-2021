@@ -3,7 +3,7 @@
 import logging
 import threading
 import time
-import requests
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from flask import Flask, request
 from flask.logging import default_handler
@@ -28,13 +28,6 @@ rule_manager: RuleManager = RuleManager(cfg, db)
 log_manager: LogManager = LogManager(cfg, db)
 rule_rest_api: Rule = Rule(rule_manager, auth_svc)
 log_rest_api: Log = Log(rule_manager, log_manager, auth_svc)
-
-#@app.before_first_request
-#def activate_job():
-#    print("x")
-#    background_thread = RunnerThread()
-#    background_thread.set_up(rule_manager, log_manager)
-#    background_thread.start()
 
 @app.route('/', methods=['GET'])
 def is_running():
@@ -117,36 +110,15 @@ def handle_exception(e):
         app.logger.error(e)
     return ('', 500)
 
-def start_runner():
-    def start_loop():
-        not_started = True
-        while not_started:
-            print('In start loop')
-            try:
-                r = requests.get(cfg.get_service_host() + ':' + cfg.get_service_port() + '/')
-                if r.status_code == 200:
-                    print('Server started, quiting start_loop')
-                    not_started = False
-                print(r.status_code)
-            except:
-                print('Server not yet started')
-            time.sleep(0.1)
-
-    print('Started runner')
-    thread = threading.Thread(target=start_loop)
-    thread.start()
-
 if __name__ == '__main__':
-    print("a")
-    #start_runner()
+    scheduler = BackgroundScheduler()
+    thread = RunnerThread()
+    thread.set_up(rule_manager, log_manager)
+    scheduler.add_job(func=thread.run, trigger="interval", seconds=1)
+    scheduler.start()
     app.run(
         host=cfg.get_service_host(),
         port=cfg.get_service_port(),
-        debug=cfg.get_debug_flag()
+        debug=False # We have to disable debug mode always, or otherwise
+                    # the background thread will run twice, causing problems
     )
-
-    #rule_manager.create_rule("Archivo file.txt", "file", "/tmp/sensor-volume/file.txt", 30)
-    #rule_manager.create_rule("Estado memoria", "command", "free -m", 30)
-    #rule_manager.create_rule("Uso CPU", "command",
-        #"mpstat | grep -A 5 \"%idle\" | tail -n 1 | awk -F " " '{print 100 -  $ 12}'a", 30)
-    #rule_manager.create_rule("Info kernel", "command", "uname -a", 0)
