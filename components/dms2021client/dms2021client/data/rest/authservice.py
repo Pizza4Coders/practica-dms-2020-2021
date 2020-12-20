@@ -125,7 +125,6 @@ class AuthService():
         connection.request('POST', '/users', form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            #print('El usuario ha sido creado correctamente')
             return
         if response.status == 400:
             raise BadRequestError()
@@ -157,7 +156,6 @@ class AuthService():
         connection.request('POST', '/users/'+str(username)+'/rights/'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            #print('Permiso otorgado correctamente')
             return
         if response.status == 401:
             raise UnauthorizedError()
@@ -187,7 +185,6 @@ class AuthService():
         connection.request('DELETE', '/users/'+str(username)+'/rights/'+str(right), form, headers)
         response: HTTPResponse = connection.getresponse()
         if response.status == 200:
-            #print('Permiso retirado correctamente del usuario')
             return
         if response.status == 401:
             raise UnauthorizedError()
