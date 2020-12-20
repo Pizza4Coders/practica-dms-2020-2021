@@ -40,6 +40,8 @@ class ClientConfiguration(Configuration):
         ---
         Returns:
             A dictionary with the authentication service configured parameters.
+        Throws:
+            - TypeError: if the authservice parameter is not a dictionary.
         """
         auth_service_value: ConfigurationValueType = self.get_value(
             'auth_service'
@@ -52,17 +54,19 @@ class ClientConfiguration(Configuration):
         return auth_service_value
 
     def __get_sensors_service_value(self) -> dict:
-        """ Gets the value of the auth_service configuration dictionary.
+        """ Gets the value of the sensor_service configuration dictionary.
         ---
         Returns:
-            A dictionary with the authentication service configured parameters.
+            A dictionary with the sensor service configured parameters.
+        Throws:
+            - TypeError: if the sensorservice parameter is not a dictionary.
         """
         sensors_service_value: ConfigurationValueType = self.get_value(
             'sensors'
         )
         if not isinstance(sensors_service_value, dict):
             raise TypeError(
-                'Configuration parameter auth_service is expected to be a dictionary. Received: '
+                'Configuration parameter sensor_service is expected to be a dictionary. Received: '
                 + str(type(sensors_service_value))
             )
         return sensors_service_value
@@ -80,24 +84,24 @@ class ClientConfiguration(Configuration):
         return str(auth_service_value['host'])
 
     def get_sensor1_service_host(self) -> str:
-        """ Gets the authentication service host configuration value.
+        """ Gets the sensor service host configuration value.
         ---
         Returns:
-            A string with the value of authservice host.
+            A string with the value of sensorservice host.
         Throws:
-            - TypeError: if the authservice parameter is not a dictionary.
+            - TypeError: if the sensorservice parameter is not a dictionary.
         """
 
         sensors_service_value: dict = self.__get_sensors_service_value()
         return str(sensors_service_value["sensor1"]['host'])
 
     def get_sensor2_service_host(self) -> str:
-        """ Gets the authentication service host configuration value.
+        """ Gets the sensor service host configuration value.
         ---
         Returns:
-            A string with the value of authservice host.
+            A string with the value of sensorservice host.
         Throws:
-            - TypeError: if the authservice parameter is not a dictionary.
+            - TypeError: if the sensorservice parameter is not a dictionary.
         """
 
         sensors_service_value: dict = self.__get_sensors_service_value()
@@ -116,24 +120,24 @@ class ClientConfiguration(Configuration):
         return int(str(auth_service_value['port']))
 
     def get_sensor1_service_port(self) -> int:
-        """ Gets the authentication service port configuration value.
+        """ Gets the sensor service port configuration value.
         ---
         Returns:
-            An integer with the value of authservice port.
+            An integer with the value of sensorservice port.
         Throws:
-            - TypeError: if the authservice parameter is not a dictionary.
+            - TypeError: if the sensorservice parameter is not a dictionary.
         """
 
         sensors_service_value: dict = self.__get_sensors_service_value()
         return int(str(sensors_service_value["sensor1"]['port']))
 
     def get_sensor2_service_port(self) -> int:
-        """ Gets the authentication service port configuration value.
+        """ Gets the sensor service port configuration value.
         ---
         Returns:
-            An integer with the value of authservice port.
+            An integer with the value of sensorservice port.
         Throws:
-            - TypeError: if the authservice parameter is not a dictionary.
+            - TypeError: if the sensorservice parameter is not a dictionary.
         """
 
         sensors_service_value: dict = self.__get_sensors_service_value()
