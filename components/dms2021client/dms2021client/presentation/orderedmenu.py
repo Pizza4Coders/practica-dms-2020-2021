@@ -63,11 +63,11 @@ class OrderedMenu(Menu):
                 if selected_opt.lower() in ("salir", "atrás", "exit", "back", "q"):
                     self._returning = True
                     return
-                selected_opt = int(selected_opt)
+                selected_opt_num = int(selected_opt)
             except ValueError:
                 pass
-            if selected_opt <= 0 or selected_opt > len(self._ordered_items):
+            if selected_opt_num <= 0 or selected_opt_num > len(self._ordered_items):
                 print("Esa opción no es correcta.")
                 continue
-            self._ordered_opt_functions[int(selected_opt) - 1]()
+            self._ordered_opt_functions[int(selected_opt_num) - 1]()
             return
