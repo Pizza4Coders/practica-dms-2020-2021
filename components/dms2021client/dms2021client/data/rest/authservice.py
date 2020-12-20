@@ -204,10 +204,8 @@ class AuthService():
             - username: The user name string.
             - right: The right name.
         Returns:
-            True if the user has the given right
+            True if the user has the given right, False if not.
         Throws:
-            - NotFoundError: if the user does not have the right, the user does not
-              exist, or the right does not exist.
             - HTTPException: On an unhandled 500 error.
         """
         form: str = urlencode({'username': username, 'right': right})

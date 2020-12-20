@@ -2,6 +2,7 @@
 """
 from typing import List, Callable
 from http.client import HTTPException
+from getpass import getpass
 from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, UnauthorizedError
 from dms2021client.presentation.user_menus.modifyrightsmenu import ModifyRightsMenu
@@ -59,7 +60,7 @@ class MainMenu(OrderedMenu):
         """ Allows to create a user.
         """
         username: str = input("Escriba el nombre del usuario a crear: ")
-        password: str = input("Escriba la contraseña para el usuario: ")
+        password: str = getpass("Escriba la contraseña para el usuario: ")
         try:
             self.__authservice.create_user(username, password, self.__session_token)
             print("El usuario se ha creado correctamente.")
