@@ -36,25 +36,28 @@ class MainMenu(OrderedMenu):
         while not self._returning:
             options: List[str] = []
             functions: List[Callable] = []
+            try:
+                super().set_title("MENÚ PRINCIPAL")
+                if self.__authservice.has_right(self.__username, "AdminUsers"):
+                    options.append("Crear usuarios")
+                    functions.append(self.create_users)
 
-            super().set_title("MENÚ PRINCIPAL")
-            if self.__authservice.has_right(self.__username, "AdminUsers"):
-                options.append("Crear usuarios")
-                functions.append(self.create_users)
+                if self.__authservice.has_right(self.__username, "AdminRights"):
+                    options.append("Modificar permisos de usuarios")
+                    functions.append(ModifyRightsMenu(self.__session_token,
+                        self.__authservice).show_options)
 
-            if self.__authservice.has_right(self.__username, "AdminRights"):
-                options.append("Modificar permisos de usuarios")
-                functions.append(ModifyRightsMenu(self.__session_token,
-                    self.__authservice).show_options)
+                if self.__authservice.has_right(self.__username, "AdminSensors"):
+                    options.append("Gestionar sensores")
+                    functions.append(SensorsMenu(self.__session_token, self.__username,
+                        self.__authservice, self.__sensorsservices).show_options)
 
-            if self.__authservice.has_right(self.__username, "AdminSensors"):
-                options.append("Gestionar sensores")
-                functions.append(SensorsMenu(self.__session_token, self.__username,
-                    self.__authservice, self.__sensorsservices).show_options)
-
-            super().set_items(options)
-            super().set_opt_fuctions(functions)
-            super().show_options()
+                super().set_items(options)
+                super().set_opt_fuctions(functions)
+                super().show_options()
+            except HTTPException:
+                print("Ha ocurrido un error inesperado.")
+                return
 
     def create_users(self):
         """ Allows to create a user.
