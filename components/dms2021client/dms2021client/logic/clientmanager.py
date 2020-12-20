@@ -48,8 +48,6 @@ class ClientManager():
         Returns:
             - username: The username string.
             - session_id: The session_id string.
-        Throws:
-            - InvalidCredentialsError: If the credentials provided are not correct.
         """
         while not self.__authservice.is_running():
             time.sleep(1)
@@ -73,10 +71,6 @@ class ClientManager():
 
     def logout(self):
         """ Allows to log out the application.
-        ---
-        Throws:
-            - UnauthorizedError: if the requestor does not meet the security
-              requirements.
         """
         try:
             self.__authservice.logout(self.__session_id)
