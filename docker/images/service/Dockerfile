@@ -3,8 +3,7 @@ FROM ubuntu:latest
 RUN /bin/bash -c "\
     apt update && \
     apt install -y python3 python3-pip && \
-    apt clean && \
-    pip3 install APScheduler \
+    apt clean \
 "
 
 ADD bootstrap.sh /tmp/scripts/

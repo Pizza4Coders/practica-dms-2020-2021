@@ -86,8 +86,8 @@ This service exposes a REST API so other services/applications can interact with
   - Returns:
     - `200 OK`. The response content (`application/json`) is a JSON list of rules with the following data on each element:
       - `rule_name`: The name of the rule
-      - `type`: Type of rule. This can be `command` if it runs a command or `file` if it checks for the presence of a file.
-      - `data`: If `type` was `command`, the command that runs, or if it was `file`, the path to the file that is checked.
+      - `type`: Type of rule. This can be `command` if it runs a command, `file` if it checks for the presence of a file or `cpu` to check cpu usage.
+      - `data`: If `type` was `command`, the command that runs, if it was `file`, the path to the file that is checked, or if it was `cpu` it can be the core number to get stats of, or `all`.
       - `frequency`: Time in seconds between each automatic run of the rule. 0 if the rule does not run automatically.
     - `401 Unauthorized` if the requestor does not meet the security requirements.
 

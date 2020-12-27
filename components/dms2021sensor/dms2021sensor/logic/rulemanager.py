@@ -7,7 +7,7 @@ from dms2021sensor.data.db.resultsets import Rules
 from dms2021sensor.data.db.results import Rule
 from dms2021sensor.logic.managerbase import ManagerBase
 from dms2021sensor.logic import LogManager
-from dms2021sensor.logic.rulerunners import CommandRuleRunner, FileRuleRunner
+from dms2021sensor.logic.rulerunners import CommandRuleRunner, FileRuleRunner, CPURuleRunner
 from dms2021sensor.data.db.exc import RuleNotExistsError
 
 class RuleManager(ManagerBase):
@@ -27,8 +27,8 @@ class RuleManager(ManagerBase):
         """
         if not rule_name:
             raise ValueError("A non-empty rule name is needed.")
-        if rule_type not in ["file", "command"]:
-            raise ValueError("The rule type must be exactly \"file\" or \"command\".")
+        if rule_type not in ["file", "command", "cpu"]:
+            raise ValueError("The rule type must be exactly \"file\", \"command\" or \"rule\".")
         if not data:
             raise ValueError("An argument is required")
         session = self.get_schema().new_session()
@@ -110,6 +110,10 @@ class RuleManager(ManagerBase):
             return result
         if rule.type == "file":
             result = str(FileRuleRunner.run_rule(rule))
+            log_manager.create_log(rule_name, datetime.now(), result)
+            return result
+        if rule.type == "cpu":
+            result = str(CPURuleRunner.run_rule(rule))
             log_manager.create_log(rule_name, datetime.now(), result)
             return result
         raise RuleNotExistsError

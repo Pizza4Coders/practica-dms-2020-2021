@@ -19,8 +19,8 @@ class RunnerThread(Thread):
         self.rules: List[Rule] = []
         self.rule_manager.create_rule("Archivo file.txt", "file", "/tmp/sensor-volume/file.txt", 30)
         self.rule_manager.create_rule("Estado memoria", "command", "free -m", 30)
-        self.rule_manager.create_rule("Uso CPU", "command",
-        "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage \"%\"}'", 30)
+        self.rule_manager.create_rule("Uso CPU", "cpu",
+        "all", 30)
         self.rule_manager.create_rule("Info kernel", "command", "uname -a", 0)
         self.last_runs: Dict[str, datetime] = {}
 
