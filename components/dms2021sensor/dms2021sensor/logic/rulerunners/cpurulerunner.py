@@ -5,7 +5,7 @@ from os.path import isfile
 from dms2021sensor.data.db.results import Rule
 from dms2021sensor.logic.rulerunners.baserulerunner import BaseRuleRunner
 from dms2021sensor.logic.rulerunners.exc import RuleRunError
-import psutil
+import psutil #type: ignore
 
 class CPURuleRunner(BaseRuleRunner):
     """ Rule runner when type is "file".
