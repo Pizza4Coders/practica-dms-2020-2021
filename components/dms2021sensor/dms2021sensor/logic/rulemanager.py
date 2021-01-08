@@ -104,16 +104,10 @@ class RuleManager(ManagerBase):
             - LogExistsError if a log already exists
         """
         rule = self.get_rule(rule_name)
-        if rule.type == "command":
-            result = CommandRuleRunner.run_rule(rule)
-            log_manager.create_log(rule_name, datetime.now(), result)
-            return result
-        if rule.type == "file":
-            result = str(FileRuleRunner.run_rule(rule))
-            log_manager.create_log(rule_name, datetime.now(), result)
-            return result
-        if rule.type == "cpu":
-            result = str(CPURuleRunner.run_rule(rule))
-            log_manager.create_log(rule_name, datetime.now(), result)
-            return result
-        raise RuleNotExistsError
+        runners = {"command": CommandRuleRunner, "file": FileRuleRunner, "cpu": CPURuleRunner}
+        if rule.type not in runners:
+            raise RuleNotExistsError
+        runner = runners[rule.type]
+        result = str(runner.run_rule(rule))
+        log_manager.create_log(rule_name, datetime.now(), result)
+        return result
