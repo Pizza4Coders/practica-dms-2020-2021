@@ -79,7 +79,7 @@ class RulesMenu(OrderedMenu):
         rulename: str = input("Introduzca el nombre de la regla: ")
         while True:
             ruletype: str = input("Introduzca el tipo de la regla (file/command): ")
-            if ruletype in ["file", "command"]:
+            if ruletype in ["file", "command", "cpu"]:
                 break
         ruleargs: str = input("Introduzca los argumentos de la regla (ruta al archivo o comando de Linux): ")
         frequency: int
