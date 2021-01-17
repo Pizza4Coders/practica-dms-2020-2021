@@ -1,7 +1,7 @@
 """ GrantRevokeMenu class module.
 """
 from functools import partial
-from typing import List, Callable, Tuple
+from typing import List, Callable, Union
 from http.client import HTTPException
 from dms2021client.data.rest import AuthService
 from dms2021client.presentation.orderedmenu import OrderedMenu
@@ -10,6 +10,7 @@ from dms2021client.data.rest.exc import NotFoundError, UnauthorizedError
 class GrantRevokeMenu(OrderedMenu):
     """ Grant or revoke rights.
     """
+    _username: str = ""
 
     def __init__(self, session_token: str, auth_service: AuthService, option: int):
         """ Constructor method.
@@ -19,46 +20,39 @@ class GrantRevokeMenu(OrderedMenu):
         Parameters:
             - session_token: The session_token of the user string.
             - authservice: REST cliente to connect to the authentication service authservice.
+            - option: 1, grant, 2, revoke.
         """
         self.__session_token: str = session_token
         self.__authservice: AuthService = auth_service
         self.__option: int = option
 
-    def show_options(self):
-        """ Shows options to grant or revoke rights.
+    def set_title(self) -> None:
+        """ Sets the menu title.
         """
-        username: str = input("Introduzca el nombre del usuario: ")
-        self._returning = False
-        while not self._returning:
-            rights, functions = self.get_rights(username, self.__option)
-            if not rights:
-                if self.__option == 1:
-                    print("El usuario ya tiene todos los permisos.")
-                    return
-                print("El usuario no tiene ningún permiso.")
-                return
-            super().set_title("PERMISOS")
-            super().set_items(rights)
-            super().set_opt_fuctions(functions)
-            try:
-                super().show_options()
-            except UnauthorizedError:
-                print("Usted no tiene permiso para cambiar permisos.")
-                self._returning = True
-            except NotFoundError:
-                print("No se pueden modificar permisos de un usuario inexistente.")
-                self._returning = True
-            except HTTPException:
-                print("Ha ocurrido un error inesperado.")
-                self._returning = True
-        self._returning = False
+        self._ordered_title = "PERMISOS"
 
-    def get_rights(self, username: str, option: int) -> Tuple[List[str], List[Callable]]:
+    def set_items(self) -> None:
+        """ Sets the menu items.
+        """
+        self._username: str = input("Introduzca el nombre del usuario: ")
+        self._ordered_items = self.get_rights(0)
+        if not self._ordered_items:
+            if self.__option == 1:
+                print("El usuario ya tiene todos los permisos.")
+                return
+            print("El usuario no tiene ningún permiso.")
+            return
+
+    def set_opt_fuctions(self) -> None:
+        """ Sets the function that will be executed when you select one option.
+        """
+        self._ordered_opt_functions = self.get_rights()
+
+    def get_rights(self, param: int = 1) -> Union[List[str], List[Callable]]:
         """ Gets rights of a user (what he has or not depends on the option)
         ---
         Parameters:
-            - username: The user name string.
-            - option: 1, grant, 2, revoke int.
+            - param: 0, return the rights, 1, return the functions.
         Returns:
             - right_result: The rights a user has o not.
             - functions: The functions to execute.
@@ -69,13 +63,36 @@ class GrantRevokeMenu(OrderedMenu):
         right_result: List[str] = []
 
         for i in rights:
-            if self.__authservice.has_right(username, i) and option == 2:
+            if self.__authservice.has_right(self._username, i) and self.__option == 2:
                 right_result.append(i)
-                fun = partial(self.__authservice.revoke, username, i, self.__session_token)
+                fun = partial(self.manage_rights, i, False)
                 functions.append(fun)
-            elif not self.__authservice.has_right(username, i) and option == 1:
+            elif not self.__authservice.has_right(self._username, i) and self.__option == 1:
                 right_result.append(i)
-                fun = partial(self.__authservice.grant, username, i, self.__session_token)
+                fun = partial(self.manage_rights, i)
                 functions.append(fun)
+        if param == 0:
+            return right_result
+        return functions
 
-        return right_result, functions
+    def manage_rights(self, right: str, grant: bool = True):
+        """ Grants or revokes rights.
+        ---
+        Parameters:
+            - right: Right to be revoked or granted.
+            - grant: False, revoke, True, grant.
+        """
+        try:
+            if not grant:
+                self.__authservice.revoke(self._username, right, self.__session_token)
+            else:
+                self.__authservice.grant(self._username, right, self.__session_token)
+        except UnauthorizedError:
+            print("Usted no tiene permiso para cambiar permisos.")
+            self._returning = True
+        except NotFoundError:
+            print("No se pueden modificar permisos de un usuario inexistente.")
+            self._returning = True
+        except HTTPException:
+            print("Ha ocurrido un error inesperado.")
+            self._returning = True

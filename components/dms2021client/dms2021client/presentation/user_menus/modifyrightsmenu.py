@@ -20,13 +20,19 @@ class ModifyRightsMenu(OrderedMenu):
         self.__session_token: str = session_token
         self.__authservice: AuthService = auth_service
 
-    def show_options(self):
-        """ Shows options to grant or revoke rights.
+    def set_title(self) -> None:
+        """ Sets the menu title.
         """
-        while not self._returning:
-            super().set_title("MODIFICAR PERMISOS")
-            super().set_items(["Añadir permisos", "Eliminar permisos"])
-            super().set_opt_fuctions(
-                [GrantRevokeMenu(self.__session_token, self.__authservice, 1).show_options,
-                GrantRevokeMenu(self.__session_token, self.__authservice, 2).show_options])
-            super().show_options()
+        self._ordered_title = "MODIFICAR PERMISOS"
+
+    def set_items(self) -> None:
+        """ Sets the menu items.
+        """
+        self._ordered_items = ["Añadir permisos", "Eliminar permisos"]
+
+    def set_opt_fuctions(self) -> None:
+        """ Sets the function that will be executed when you select one option.
+        """
+        self._ordered_opt_functions = [
+            GrantRevokeMenu(self.__session_token, self.__authservice, 1).show_options,
+            GrantRevokeMenu(self.__session_token, self.__authservice, 2).show_options]
