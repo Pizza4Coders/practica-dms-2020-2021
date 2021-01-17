@@ -1,7 +1,7 @@
 """ GrantRevokeMenu class module.
 """
 from functools import partial
-from typing import List, Callable, Union
+from typing import List, Callable, Tuple
 from http.client import HTTPException
 from dms2021client.data.rest import AuthService
 from dms2021client.presentation.orderedmenu import OrderedMenu
@@ -35,7 +35,7 @@ class GrantRevokeMenu(OrderedMenu):
         """ Sets the menu items.
         """
         self._username: str = input("Introduzca el nombre del usuario: ")
-        self._ordered_items = self.get_rights(0)
+        self._ordered_items = self.get_rights()[0]
         if not self._ordered_items:
             if self.__option == 1:
                 print("El usuario ya tiene todos los permisos.")
@@ -46,9 +46,9 @@ class GrantRevokeMenu(OrderedMenu):
     def set_opt_fuctions(self) -> None:
         """ Sets the function that will be executed when you select one option.
         """
-        self._ordered_opt_functions = self.get_rights()
+        self._ordered_opt_functions = self.get_rights()[1]
 
-    def get_rights(self, param: int = 1) -> Union[List[str], List[Callable]]:
+    def get_rights(self) -> Tuple[List[str], List[Callable]]:
         """ Gets rights of a user (what he has or not depends on the option)
         ---
         Parameters:
@@ -71,9 +71,7 @@ class GrantRevokeMenu(OrderedMenu):
                 right_result.append(i)
                 fun = partial(self.manage_rights, i)
                 functions.append(fun)
-        if param == 0:
-            return right_result
-        return functions
+        return right_result, functions
 
     def manage_rights(self, right: str, grant: bool = True):
         """ Grants or revokes rights.
