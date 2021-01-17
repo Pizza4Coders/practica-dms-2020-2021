@@ -25,6 +25,7 @@ class GrantRevokeMenu(OrderedMenu):
         self.__session_token: str = session_token
         self.__authservice: AuthService = auth_service
         self.__option: int = option
+        self.__repeat = False
 
     def set_title(self) -> None:
         """ Sets the menu title.
@@ -37,7 +38,8 @@ class GrantRevokeMenu(OrderedMenu):
     def set_items(self) -> None:
         """ Sets the menu items.
         """
-        self._username: str = input("Introduzca el nombre del usuario: ")
+        if not self.__repeat:
+            self._username: str = input("Introduzca el nombre del usuario: ")
         self._ordered_items = self.get_rights()[0]
         if not self._ordered_items:
             if self.__option == 1:
@@ -90,6 +92,7 @@ class GrantRevokeMenu(OrderedMenu):
             else:
                 self.__authservice.grant(self._username, right, self.__session_token)
                 print(f"El permiso {right} ha sido añadido del usuario {self._username}.\n")
+            self.__repeat = True
         except UnauthorizedError:
             print("Usted no tiene permiso para cambiar permisos.")
         except NotFoundError:
