@@ -4,7 +4,6 @@
 from threading import Thread
 from typing import List, Dict
 from datetime import datetime
-import time
 from dms2021sensor.logic import RuleManager, LogManager
 from dms2021sensor.data.db.results import Rule
 

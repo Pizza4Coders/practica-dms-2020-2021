@@ -8,7 +8,6 @@ from dms2021sensor.data.db.exc import RuleNotExistsError
 from dms2021sensor.logic.rulerunners.exc import RuleRunError
 from dms2021sensor.data.rest.exc import NotFoundError
 from dms2021sensor.data.rest import AuthService
-from dms2021core.data import UserRightName
 
 class Log():
     """ Class responsible of handling the log-related REST requests.
