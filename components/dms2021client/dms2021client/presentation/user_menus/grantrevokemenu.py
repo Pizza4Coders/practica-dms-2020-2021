@@ -6,6 +6,7 @@ from http.client import HTTPException
 from dms2021client.data.rest import AuthService
 from dms2021client.presentation.orderedmenu import OrderedMenu
 from dms2021client.data.rest.exc import NotFoundError, UnauthorizedError
+from colorama import Fore # type: ignore
 
 class GrantRevokeMenu(OrderedMenu):
     """ Grant or revoke rights.
@@ -88,14 +89,18 @@ class GrantRevokeMenu(OrderedMenu):
         try:
             if not grant:
                 self.__authservice.revoke(self._username, right, self.__session_token)
-                print(f"El permiso {right} ha sido eliminado del usuario {self._username}.\n")
+                print(Fore.GREEN
+                    + f"El permiso {right} ha sido eliminado del usuario {self._username}.\n"
+                    + Fore.RESET)
             else:
                 self.__authservice.grant(self._username, right, self.__session_token)
-                print(f"El permiso {right} ha sido añadido del usuario {self._username}.\n")
-            self.__repeat = True
+                print(Fore.GREEN
+                    + f"El permiso {right} ha sido añadido al usuario {self._username}.\n"
+                    + Fore.RESET)
+                self.__repeat = True
         except UnauthorizedError:
-            print("Usted no tiene permiso para cambiar permisos.")
+            self.print_error("Usted no tiene permiso para cambiar permisos.")
         except NotFoundError:
-            print("No se pueden modificar permisos de un usuario inexistente.")
+            self.print_error("No se pueden modificar permisos de un usuario inexistente.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")

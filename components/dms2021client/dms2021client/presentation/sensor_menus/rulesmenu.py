@@ -82,9 +82,9 @@ class RulesMenu(OrderedMenu):
                     print("[" + k.upper() + "] -> " + str(rule[k]))
                 print("-"*50)
         except UnauthorizedError:
-            print("Usted no tiene permisos para realizar esta acción.")
+            self.print_error("Usted no tiene permisos para realizar esta acción.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
 
     def remove_rules(self) -> None:
         """ Removes a specified rule.
@@ -95,13 +95,13 @@ class RulesMenu(OrderedMenu):
             self.__sensorservice.delete_rule(rulename, self.__username)
             print("\n La regla " + rulename + " ha sido eliminada correctamente.")
         except BadRequestError:
-            print("Se han introducido parámetros incorrectos.")
+            self.print_error("Se han introducido parámetros incorrectos.")
         except UnauthorizedError:
-            print("Usted no tiene permisos para realizar esta acción.")
+            self.print_error("Usted no tiene permisos para realizar esta acción.")
         except NotFoundError:
-            print("No existe una regla con ese nombre.")
+            self.print_error("No existe una regla con ese nombre.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
 
     def run_rule(self) -> None:
         """ Runs a specified rule.
@@ -113,13 +113,13 @@ class RulesMenu(OrderedMenu):
             print("Resultado de la ejecución: ")
             print(result["result"])
         except BadRequestError:
-            print("Se han introducido parámetros incorrectos.")
+            self.print_error("Se han introducido parámetros incorrectos.")
         except UnauthorizedError:
-            print("Usted no tiene permisos para realizar esta acción.")
+            self.print_error("Usted no tiene permisos para realizar esta acción.")
         except NotFoundError:
-            print("No existe una regla con ese nombre.")
+            self.print_error("No existe una regla con ese nombre.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
 
     def get_log(self) -> None:
         """ Gets the log.
@@ -132,6 +132,6 @@ class RulesMenu(OrderedMenu):
                     print("[" + k.upper() + "] -> " + str(rule[k]))
                 print("-"*66)
         except UnauthorizedError:
-            print("Usted no tiene permisos para realizar esta acción.")
+            self.print_error("Usted no tiene permisos para realizar esta acción.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
