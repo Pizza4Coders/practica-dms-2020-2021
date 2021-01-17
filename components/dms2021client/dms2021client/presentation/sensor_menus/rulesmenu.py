@@ -8,6 +8,7 @@ from dms2021client.data.rest.exc import UnauthorizedError
 from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.presentation.sensor_menus.addrulesmenu import AddRulesMenu
 from dms2021client.presentation.orderedmenu import OrderedMenu
+from colorama import Fore # type: ignore
 
 class RulesMenu(OrderedMenu):
     """ Add, Remove, Show or Execute Rules.
@@ -93,7 +94,8 @@ class RulesMenu(OrderedMenu):
             print("-"*20 + "ELIMINAR REGLA" + "-"*20 + "\n")
             rulename: str = input("Introduzca el nombre de la regla: ")
             self.__sensorservice.delete_rule(rulename, self.__username)
-            print("\n La regla " + rulename + " ha sido eliminada correctamente.")
+            print(Fore.GREEN + "\n La regla " + rulename + " ha sido eliminada correctamente."
+                + Fore.RESET)
         except BadRequestError:
             self.print_error("Se han introducido parámetros incorrectos.")
         except UnauthorizedError:

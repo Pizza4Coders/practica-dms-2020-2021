@@ -44,9 +44,9 @@ class GrantRevokeMenu(OrderedMenu):
         self._ordered_items = self.get_rights()[0]
         if not self._ordered_items:
             if self.__option == 1:
-                print("El usuario ya tiene todos los permisos.")
+                self.print_error("El usuario ya tiene todos los permisos.")
                 return
-            print("El usuario no tiene ningún permiso.")
+            self.print_error("El usuario no tiene ningún permiso.")
             return
 
     def set_opt_fuctions(self) -> None:
