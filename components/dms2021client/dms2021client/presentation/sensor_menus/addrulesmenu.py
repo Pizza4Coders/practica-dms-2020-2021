@@ -85,6 +85,6 @@ class AddRulesMenu(OrderedMenu):
         """ Creates a new cpu rule.
         """
         rulename: str = input("Introduzca el nombre de la regla: ")
-        ruleargs: str = input("Introduzca el número de core que desee comprobar \
-        o 'all' si desea comprobar todos a la vez: ")
+        ruleargs: str = input("Introduzca el número de core que desee comprobar" +
+            " o 'all' si desea comprobar todos a la vez: ")
         self.add_rules(rulename, "cpu", ruleargs)
