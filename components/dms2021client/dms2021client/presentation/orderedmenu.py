@@ -67,12 +67,13 @@ class OrderedMenu(ABC):
         while True:
             try:
                 self._load_menu()
+                if not self._ordered_items or not self._ordered_opt_functions:
+                    return
                 self._draw_title()
                 self._draw_items()
                 print("Si desea volver atrás introduzca \"Salir\"")
                 selected_opt = input("Selecciona una opción: ")
                 if selected_opt.lower() in ("salir", "atrás", "exit", "back", "q"):
-                    self._returning = True
                     return
                 selected_opt_num = int(selected_opt)
             except ValueError:
@@ -81,4 +82,3 @@ class OrderedMenu(ABC):
                 print("Esa opción no es correcta.")
                 continue
             self._ordered_opt_functions[int(selected_opt_num) - 1]()
-            return
