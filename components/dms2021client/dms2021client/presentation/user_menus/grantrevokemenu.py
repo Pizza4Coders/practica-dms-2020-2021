@@ -97,7 +97,7 @@ class GrantRevokeMenu(OrderedMenu):
                 print(Fore.GREEN
                     + f"El permiso {right} ha sido añadido al usuario {self._username}.\n"
                     + Fore.RESET)
-                self.__repeat = True
+            self.__repeat = True
         except UnauthorizedError:
             self.print_error("Usted no tiene permiso para cambiar permisos.")
         except NotFoundError:
