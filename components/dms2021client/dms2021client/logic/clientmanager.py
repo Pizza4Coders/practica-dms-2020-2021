@@ -61,8 +61,8 @@ class ClientManager():
             password: str = getpass("Contraseña: ")
             try:
                 session_id: str = self.__authservice.login(username, password)
-                print(Fore.GREEN + "Ha iniciado sesión correctamente " +
-                    Fore.RESET + username + " . Session id: " + session_id)
+                print(Fore.GREEN + "Ha iniciado sesión correctamente." + Fore.RESET
+                + "\nUsuario: " + username + " . Session id: " + session_id)
                 break
             except InvalidCredentialsError:
                 print(Fore.RED + "Usuario y/o contraseña. Vuelva a intentarlo." + Style.RESET_ALL)

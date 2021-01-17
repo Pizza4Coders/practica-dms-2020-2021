@@ -8,6 +8,7 @@ from dms2021client.data.rest.exc import BadRequestError, ConflictError, Unauthor
 from dms2021client.presentation.user_menus.modifyrightsmenu import ModifyRightsMenu
 from dms2021client.presentation.sensor_menus import SensorsMenu
 from dms2021client.presentation.orderedmenu import OrderedMenu
+from colorama import Fore # type: ignore
 
 class MainMenu(OrderedMenu):
     """ Shows a menu with many options.
@@ -89,7 +90,7 @@ class MainMenu(OrderedMenu):
         password: str = getpass("Escriba la contraseña para el usuario: ")
         try:
             self.__authservice.create_user(username, password, self.__session_token)
-            print("El usuario se ha creado correctamente.")
+            print(Fore.GREEN + "El usuario se ha creado correctamente." + Fore.RESET)
         except BadRequestError:
             self.print_error("Falta algún dato. Revíselo.")
         except UnauthorizedError:
