@@ -86,8 +86,10 @@ class GrantRevokeMenu(OrderedMenu):
         try:
             if not grant:
                 self.__authservice.revoke(self._username, right, self.__session_token)
+                print(f"El permiso {right} ha sido eliminado del usuario {self._username}.\n")
             else:
                 self.__authservice.grant(self._username, right, self.__session_token)
+                print(f"El permiso {right} ha sido añadido del usuario {self._username}.\n")
         except UnauthorizedError:
             print("Usted no tiene permiso para cambiar permisos.")
         except NotFoundError:
