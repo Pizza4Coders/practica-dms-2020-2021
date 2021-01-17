@@ -30,34 +30,57 @@ class MainMenu(OrderedMenu):
         self.__authservice = auth_service
         self.__sensorsservices = sensors_services
 
-    def show_options(self) -> None:
-        """ Shows the options of the menu depends on the rights the user has.
+    def set_title(self) -> None:
+        """ Sets the menu title.
+        ---
+        Parameters:
+            - title: A string with the title that will be displayed in the menu.
         """
-        while not self._returning:
-            options: List[str] = []
-            functions: List[Callable] = []
-            try:
-                super().set_title("MENÚ PRINCIPAL")
-                if self.__authservice.has_right(self.__username, "AdminUsers"):
-                    options.append("Crear usuarios")
-                    functions.append(self.create_users)
+        self._ordered_title = "MENÚ PRINCIPAL"
 
-                if self.__authservice.has_right(self.__username, "AdminRights"):
-                    options.append("Modificar permisos de usuarios")
-                    functions.append(ModifyRightsMenu(self.__session_token,
-                        self.__authservice).show_options)
+    def set_items(self) -> None:
+        """ Sets the menu items.
+        ---
+        Parameters:
+            - items: A list with the strings that will display the menu options.
+        """
+        items: List[str] = []
+        try:
+            if self.__authservice.has_right(self.__username, "AdminUsers"):
+                items.append("Crear usuarios")
 
-                if self.__authservice.has_right(self.__username, "AdminSensors"):
-                    options.append("Gestionar sensores")
-                    functions.append(SensorsMenu(self.__session_token, self.__username,
-                        self.__authservice, self.__sensorsservices).show_options)
+            if self.__authservice.has_right(self.__username, "AdminRights"):
+                items.append("Modificar permisos de usuarios")
 
-                super().set_items(options)
-                super().set_opt_fuctions(functions)
-                super().show_options()
-            except HTTPException:
-                print("Ha ocurrido un error inesperado.")
-                return
+            if self.__authservice.has_right(self.__username, "AdminSensors"):
+                items.append("Gestionar sensores")
+        except HTTPException:
+            print("Ha ocurrido un error inesperado.")
+            return
+        self._ordered_items = items
+
+    def set_opt_fuctions(self) -> None:
+        """ Sets the function that will be executed when you select one option.
+        Parameters:
+            - functions: A list with the functions that will be called when
+            a menu option is selected.
+        """
+        functions: List[Callable] = []
+        try:
+            if self.__authservice.has_right(self.__username, "AdminUsers"):
+                functions.append(self.create_users)
+
+            if self.__authservice.has_right(self.__username, "AdminRights"):
+                functions.append(ModifyRightsMenu(self.__session_token,
+                    self.__authservice).show_options)
+
+            if self.__authservice.has_right(self.__username, "AdminSensors"):
+                functions.append(SensorsMenu(self.__session_token, self.__username,
+                    self.__authservice, self.__sensorsservices).show_options)
+        except HTTPException:
+            print("Ha ocurrido un error inesperado.")
+            return
+        self._ordered_opt_functions = functions
 
     def create_users(self):
         """ Allows to create a user.

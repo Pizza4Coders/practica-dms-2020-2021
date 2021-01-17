@@ -28,22 +28,33 @@ class SensorsMenu(OrderedMenu):
         self.__authservice: AuthService = authservice
         self.__sensorservices: List[SensorsService] = sensorsservices
 
-    def show_options(self):
-        """ Shows options to choose a sensor.
+    def set_title(self) -> None:
+        """ Sets the menu title.
+        ---
+        Parameters:
+            - title: A string with the title that will be displayed in the menu.
         """
-        while not self._returning:
-            options: List[str] = []
-            functions: List[Callable] = []
+        self._ordered_title = "MENÚ SENSORES"
 
-            self.set_title("MENÚ SENSORES")
-            for i, sensorservice in enumerate(self.__sensorservices, 1):
-                options.append("Sensor " + str(i))
-                functions.append(RulesMenu(self.__session_token, self.__username,
-                    self.__authservice, sensorservice).show_options)
-            self.set_items(options)
-            self.set_opt_fuctions(functions)
-            try:
-                super().show_options()
-            except UnauthorizedError:
-                print("Usted no tiene permisos sobre este sensor.")
-                self._returning = True
+    def set_items(self) -> None:
+        """ Sets the menu items.
+        ---
+        Parameters:
+            - items: A list with the strings that will display the menu options.
+        """
+        items: List[str] = []
+        for i in range(len(self.__sensorservices)):
+            items.append("Sensor " + str(i))
+        self._ordered_items = items
+
+    def set_opt_fuctions(self) -> None:
+        """ Sets the function that will be executed when you select one option.
+        Parameters:
+            - functions: A list with the functions that will be called when
+            a menu option is selected.
+        """
+        functions: List[Callable] = []
+        for sensorservice in self.__sensorservices:
+            functions.append(RulesMenu(self.__session_token, self.__username,
+                self.__authservice, sensorservice).show_options)
+        self._ordered_opt_functions = functions

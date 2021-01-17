@@ -30,41 +30,68 @@ class RulesMenu(OrderedMenu):
         self.__authservice: AuthService = authservice
         self.__sensorservice: SensorsService = sensorservice
 
-    def show_options(self):
-        """ Shows options to modify rules or view reports, depends on the rights
-        the user has.
+    def set_title(self) -> None:
+        """ Sets the menu title.
+        ---
+        Parameters:
+            - title: A string with the title that will be displayed in the menu.
         """
-        while not self._returning:
-            options: List[str] = []
-            functions: List[Callable] = []
+        self._ordered_title = "MENÚ REGLAS"
 
-            self.set_title("MENÚ REGLAS")
+    def set_items(self) -> None:
+        """ Sets the menu items.
+        ---
+        Parameters:
+            - items: A list with the strings that will display the menu options.
+        """
+        items: List[str] = []
+        try:
             if self.__authservice.has_right(self.__username, "AdminRules"):
-                options += ["Ver reglas", "Añadir regla", "Eliminar regla"]
+                items += ["Ver reglas", "Añadir regla", "Eliminar regla"]
+                if self.__authservice.has_right(self.__username, "ViewReports"):
+                    items.append("Ejecutar regla")
+            if self.__authservice.has_right(self.__username, "ViewReports"):
+                items.append("Ver historial de ejecución")
+        except BadRequestError:
+            print("Se han introducido parámetros incorrectos.")
+        except UnauthorizedError:
+            print("Usted no tiene permisos para realizar esta acción.")
+        except NotFoundError:
+            print("No existe una regla con ese nombre.")
+        except ConflictError:
+            print("Ya existe una regla con ese nombre.")
+        except HTTPException:
+            print("Ha ocurrido un error inesperado.")
+        self._ordered_items = items
+
+    def set_opt_fuctions(self) -> None:
+        """ Sets the function that will be executed when you select one option.
+        Parameters:
+            - functions: A list with the functions that will be called when
+            a menu option is selected.
+        """
+        functions: List[Callable] = []
+        try:
+            if self.__authservice.has_right(self.__username, "AdminRules"):
                 functions += [self.get_rules,
                     AddRulesMenu(self.__session_token, self.__username,
                     self.__authservice, self.__sensorservice).show_options,
                     self.remove_rules]
                 if self.__authservice.has_right(self.__username, "ViewReports"):
-                    options.append("Ejecutar regla")
                     functions.append(self.run_rule)
             if self.__authservice.has_right(self.__username, "ViewReports"):
-                options.append("Ver historial de ejecución")
                 functions.append(self.get_log)
-            super().set_items(options)
-            super().set_opt_fuctions(functions)
-            try:
-                super().show_options()
-            except BadRequestError:
-                print("Se han introducido parámetros incorrectos.")
-            except UnauthorizedError:
-                print("Usted no tiene permisos para realizar esta acción.")
-            except NotFoundError:
-                print("No existe una regla con ese nombre.")
-            except ConflictError:
-                print("Ya existe una regla con ese nombre.")
-            except HTTPException:
-                print("Ha ocurrido un error inesperado.")
+        except BadRequestError:
+            print("Se han introducido parámetros incorrectos.")
+        except UnauthorizedError:
+            print("Usted no tiene permisos para realizar esta acción.")
+        except NotFoundError:
+            print("No existe una regla con ese nombre.")
+        except ConflictError:
+            print("Ya existe una regla con ese nombre.")
+        except HTTPException:
+            print("Ha ocurrido un error inesperado.")
+        self._ordered_opt_functions = functions
 
     def get_rules(self) -> None:
         """ Gets the list of rules.
