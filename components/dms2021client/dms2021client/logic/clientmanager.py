@@ -53,7 +53,7 @@ class ClientManager():
             time.sleep(1)
         print("\nEl servicio de autenticación está activo.")
 
-        print("Si desea salir pulse Ctrl+C")
+        print("Si desea salir pulse Ctrl+P, Ctrl+Q")
         while True:
             print("\nINICIO DE SESIÓN")
             username: str = input("Usuario: ")
