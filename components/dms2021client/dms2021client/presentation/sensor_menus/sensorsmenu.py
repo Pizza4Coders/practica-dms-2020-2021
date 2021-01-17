@@ -42,7 +42,7 @@ class SensorsMenu(OrderedMenu):
             - items: A list with the strings that will display the menu options.
         """
         items: List[str] = []
-        for i in range(len(self.__sensorservices)):
+        for i in range(1, len(self.__sensorservices) + 1):
             items.append("Sensor " + str(i))
         self._ordered_items = items
 
