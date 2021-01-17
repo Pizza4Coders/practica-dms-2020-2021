@@ -7,7 +7,7 @@ from http.client import HTTPException
 from dms2021client.data.config import ClientConfiguration
 from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.data.rest.exc import InvalidCredentialsError, UnauthorizedError
-from dms2021client.presentation import Menu, MainMenu
+from dms2021client.presentation import MainMenu
 
 class ClientManager():
     """ Manager class for the client logic.

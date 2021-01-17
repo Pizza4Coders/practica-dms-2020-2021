@@ -3,7 +3,6 @@
 
 from abc import ABC, abstractmethod
 from typing import List, Callable, Union
-from dms2021client.presentation.menu import Menu
 
 class OrderedMenu(ABC):
     """Class Ordered Menu
