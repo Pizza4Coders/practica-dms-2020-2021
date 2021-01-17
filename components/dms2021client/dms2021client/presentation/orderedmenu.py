@@ -1,10 +1,11 @@
-"""OrderedMenu class module.
+""" Module containing the dms2021client.presentation.menus.ORderedMenu class
 """
 
+from abc import ABC, abstractmethod
 from typing import List, Callable, Union
 from dms2021client.presentation.menu import Menu
 
-class OrderedMenu(Menu):
+class OrderedMenu(ABC):
     """Class Ordered Menu
     """
 
@@ -13,29 +14,32 @@ class OrderedMenu(Menu):
     _ordered_opt_functions: List[Callable] = []
     _returning: bool = False
 
-    def set_title(self, title: str) -> None:
+    @abstractmethod
+    def set_title(self) -> None:
         """ Sets the menu title.
         ---
         Parameters:
             - title: A string with the title that will be displayed in the menu.
         """
-        self._ordered_title = title
+        return
 
-    def set_items(self, items: List[str]) -> None:
+    @abstractmethod
+    def set_items(self) -> None:
         """ Sets the menu items.
         ---
         Parameters:
             - items: A list with the strings that will display the menu options.
         """
-        self._ordered_items = items
+        return
 
-    def set_opt_fuctions(self, functions: List[Callable]) -> None:
+    @abstractmethod
+    def set_opt_fuctions(self) -> None:
         """ Sets the function that will be executed when you select one option.
         Parameters:
             - functions: A list with the functions that will be called when
             a menu option is selected.
         """
-        self._ordered_opt_functions = functions
+        return
 
     def _draw_title(self) -> None:
         """ Display the menu title.
@@ -49,6 +53,13 @@ class OrderedMenu(Menu):
             print(str(i) + ". " + item)
         print("-"*(40+len(self._ordered_title)))
 
+    def _load_menu(self) -> None:
+        """ Loads menu data.
+        """
+        self.set_title()
+        self.set_items()
+        self.set_opt_fuctions()
+
     def show_options(self) -> None:
         """ Display the menu and controls the actions to be executed when one option
         have been selected.
@@ -56,6 +67,7 @@ class OrderedMenu(Menu):
         selected_opt: Union[str, int] = 0
         while True:
             try:
+                self._load_menu()
                 self._draw_title()
                 self._draw_items()
                 print("Si desea volver atrás introduzca \"Salir\"")
