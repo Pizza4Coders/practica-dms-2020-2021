@@ -6,6 +6,7 @@ from http.client import HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, UnauthorizedError
 from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.presentation.orderedmenu import OrderedMenu
+from colorama import Fore # type: ignore
 
 class AddRulesMenu(OrderedMenu):
     """ Add Rules.
@@ -69,18 +70,19 @@ class AddRulesMenu(OrderedMenu):
                     frequency = int(input("Introduzca la frecuencia de ejecución en segundos: "))
                     break
                 except ValueError:
-                    print("Valor incorrecto.")
+                    self.print_error("Valor incorrecto.")
             self.__sensorservice.create_rule(rulename, ruletype,
                 ruleargs,frequency, self.__username)
-            print("\n La regla " + rulename + " ha sido creada correctamente.")
+            print(Fore.GREEN + "\n La regla " + rulename + " ha sido creada correctamente."
+                + Fore.RESET)
         except BadRequestError:
-            print("Se han introducido parámetros incorrectos.")
+            self.print_error("Se han introducido parámetros incorrectos.")
         except UnauthorizedError:
-            print("Usted no tiene permisos para realizar esta acción.")
+            self.print_error("Usted no tiene permisos para realizar esta acción.")
         except ConflictError:
-            print("Ya existe una regla con ese nombre.")
+            self.print_error("Ya existe una regla con ese nombre.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
 
     def add_file_rule(self) -> None:
         """ Creates a new file checking rule.

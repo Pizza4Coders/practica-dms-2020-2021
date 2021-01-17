@@ -55,7 +55,7 @@ class MainMenu(OrderedMenu):
             if self.__authservice.has_right(self.__username, "AdminSensors"):
                 items.append("Gestionar sensores")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
             return
         self._ordered_items = items
 
@@ -78,7 +78,7 @@ class MainMenu(OrderedMenu):
                 functions.append(SensorsMenu(self.__session_token, self.__username,
                     self.__authservice, self.__sensorsservices).show_options)
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")
             return
         self._ordered_opt_functions = functions
 
@@ -91,10 +91,10 @@ class MainMenu(OrderedMenu):
             self.__authservice.create_user(username, password, self.__session_token)
             print("El usuario se ha creado correctamente.")
         except BadRequestError:
-            print("Falta algún dato. Revíselo.")
+            self.print_error("Falta algún dato. Revíselo.")
         except UnauthorizedError:
-            print("Usted no tiene permisos de usuarios.")
+            self.print_error("Usted no tiene permisos de usuarios.")
         except ConflictError:
-            print("El usuario ya existe.")
+            self.print_error("El usuario ya existe.")
         except HTTPException:
-            print("Ha ocurrido un error inesperado.")
+            self.print_error("Ha ocurrido un error inesperado.")

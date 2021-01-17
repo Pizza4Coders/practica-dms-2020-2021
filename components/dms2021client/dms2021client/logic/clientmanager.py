@@ -8,6 +8,7 @@ from dms2021client.data.config import ClientConfiguration
 from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.data.rest.exc import InvalidCredentialsError, UnauthorizedError
 from dms2021client.presentation import OrderedMenu, MainMenu
+from colorama import Fore, Style # type: ignore
 
 class ClientManager():
     """ Manager class for the client logic.
@@ -51,20 +52,20 @@ class ClientManager():
         """
         while not self.__authservice.is_running():
             time.sleep(1)
-        print("\nEl servicio de autenticación está activo.")
+        print(Style.BRIGHT + Fore.GREEN + "\nEl servicio de autenticación está activo.")
 
-        print("Si desea salir pulse Ctrl+P, Ctrl+Q")
+        print(Fore.YELLOW + "Si desea salir pulse Ctrl+P, Ctrl+Q" + Fore.RESET)
         while True:
-            print("\nINICIO DE SESIÓN")
+            print(Fore.BLUE + "\nINICIO DE SESIÓN" + Style.RESET_ALL)
             username: str = input("Usuario: ")
             password: str = getpass("Contraseña: ")
             try:
                 session_id: str = self.__authservice.login(username, password)
-                print("Ha iniciado sesión correctamente " + username
-                + " . Session id: " + session_id)
+                print(Fore.GREEN + "Ha iniciado sesión correctamente " +
+                    Fore.RESET + username + " . Session id: " + session_id)
                 break
             except InvalidCredentialsError:
-                print("Usuario y/o contraseña. Vuelva a intentarlo.")
+                print(Fore.RED + "Usuario y/o contraseña. Vuelva a intentarlo." + Style.RESET_ALL)
             except HTTPException as ex:
                 print(ex)
         return username, session_id
@@ -74,8 +75,9 @@ class ClientManager():
         """
         try:
             self.__authservice.logout(self.__session_id)
-            print("La sesión se ha cerrado correctamente")
+            print(Style.BRIGHT + Fore.GREEN + "La sesión se ha cerrado correctamente"
+                + Style.RESET_ALL)
         except UnauthorizedError:
-            print("Sesión incorrecta")
+            print(Fore.RED + "Sesión incorrecta" + Fore.RESET)
         except HTTPException:
-            print("Ha ocurrido un error inesperado")
+            print(Fore.RED + "Ha ocurrido un error inesperado" + Fore.RESET)
