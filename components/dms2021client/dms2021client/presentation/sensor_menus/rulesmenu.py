@@ -1,4 +1,4 @@
-"""RulesMenu class module.
+""" RulesMenu class module.
 """
 
 from typing import List, Callable
@@ -6,10 +6,11 @@ from http.client import HTTPException
 from dms2021client.data.rest.exc import BadRequestError, ConflictError, NotFoundError
 from dms2021client.data.rest.exc import UnauthorizedError
 from dms2021client.data.rest import AuthService, SensorsService
+from dms2021client.presentation.sensor_menus.addrulesmenu import AddRulesMenu
 from dms2021client.presentation.orderedmenu import OrderedMenu
 
 class RulesMenu(OrderedMenu):
-    """ Add, Remove, Show or Execute Rules
+    """ Add, Remove, Show or Execute Rules.
     """
 
     def __init__(self, session_token: str, username: str,
@@ -40,7 +41,10 @@ class RulesMenu(OrderedMenu):
             self.set_title("MENÚ REGLAS")
             if self.__authservice.has_right(self.__username, "AdminRules"):
                 options += ["Ver reglas", "Añadir regla", "Eliminar regla"]
-                functions += [self.get_rules, self.add_rules, self.remove_rules]
+                functions += [self.get_rules,
+                    AddRulesMenu(self.__session_token, self.__username,
+                    self.__authservice, self.__sensorservice).show_options,
+                    self.remove_rules]
                 if self.__authservice.has_right(self.__username, "ViewReports"):
                     options.append("Ejecutar regla")
                     functions.append(self.run_rule)
@@ -71,27 +75,6 @@ class RulesMenu(OrderedMenu):
             for k in rule:
                 print("[" + k.upper() + "] -> " + str(rule[k]))
             print("-"*50)
-
-    def add_rules(self) -> None:
-        """ Creates a new rule.
-        """
-        print("-"*20 + "AÑADIR REGLA" + "-"*20 + "\n")
-        rulename: str = input("Introduzca el nombre de la regla: ")
-        while True:
-            ruletype: str = input("Introduzca el tipo de la regla (file/command): ")
-            if ruletype in ["file", "command", "cpu"]:
-                break
-        ruleargs: str = input("Introduzca los argumentos de la regla (ruta al archivo o comando de Linux): ")
-        frequency: int
-        while True:
-            try:
-                frequency = int(input("Introduzca la frecuencia de ejecución en segundos: "))
-                break
-            except ValueError:
-                print("Valor incorrecto.")
-        self.__sensorservice.create_rule(rulename, ruletype, ruleargs,
-            frequency, self.__username)
-        print("\n La regla " + rulename + " ha sido creada correctamente.")
 
     def remove_rules(self) -> None:
         """ Removes a specified rule.
