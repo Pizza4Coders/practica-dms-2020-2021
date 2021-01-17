@@ -7,7 +7,7 @@ from http.client import HTTPException
 from dms2021client.data.config import ClientConfiguration
 from dms2021client.data.rest import AuthService, SensorsService
 from dms2021client.data.rest.exc import InvalidCredentialsError, UnauthorizedError
-from dms2021client.presentation import MainMenu
+from dms2021client.presentation import OrderedMenu, MainMenu
 
 class ClientManager():
     """ Manager class for the client logic.
@@ -34,7 +34,7 @@ class ClientManager():
         while True:
             self.__username, self.__session_id = self.login()
 
-            self.__page: Menu = MainMenu(self.__session_id,
+            self.__page: OrderedMenu = MainMenu(self.__session_id,
                 self.__username, self.__authservice, [self.__sensor1_svc, self.__sensor2_svc])
 
             self.__page.show_options()
