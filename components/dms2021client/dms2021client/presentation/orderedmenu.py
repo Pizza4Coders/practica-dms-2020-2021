@@ -11,7 +11,6 @@ class OrderedMenu(ABC):
     _ordered_title: str = ""
     _ordered_items: List[str] = []
     _ordered_opt_functions: List[Callable] = []
-    _returning: bool = False
 
     @abstractmethod
     def set_title(self) -> None:

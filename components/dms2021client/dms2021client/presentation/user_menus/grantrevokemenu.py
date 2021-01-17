@@ -29,7 +29,10 @@ class GrantRevokeMenu(OrderedMenu):
     def set_title(self) -> None:
         """ Sets the menu title.
         """
-        self._ordered_title = "PERMISOS"
+        if self.__option == 1:
+            self._ordered_title = "AÑADIR PERMISOS"
+        else:
+            self._ordered_title = "ELIMINAR PERMISOS"
 
     def set_items(self) -> None:
         """ Sets the menu items.
@@ -87,10 +90,7 @@ class GrantRevokeMenu(OrderedMenu):
                 self.__authservice.grant(self._username, right, self.__session_token)
         except UnauthorizedError:
             print("Usted no tiene permiso para cambiar permisos.")
-            self._returning = True
         except NotFoundError:
             print("No se pueden modificar permisos de un usuario inexistente.")
-            self._returning = True
         except HTTPException:
             print("Ha ocurrido un error inesperado.")
-            self._returning = True
